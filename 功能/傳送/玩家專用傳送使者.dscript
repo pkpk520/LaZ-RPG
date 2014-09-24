@@ -38,7 +38,6 @@
             <player.name> == danny940111 ||
             <player.name> == hate ||
             <player.name> == cgl500 ||
-            <player.name> == patrick339 ||
             <player.name> == jeff1810qw ||
             <player.name> == patrick339 ||
             <player.name> == Jon {
@@ -50,14 +49,12 @@
         - if <player.in_group[Member]> ||
             <player.name> == ANTI ||
             <player.name> == whitpillow ||
+            <player.name> == 我偷新增 ||
             <player.name> == danny940111 ||
-            <player.name> == hate ||
+            <player.name> == 我偷改 ||
             <player.name> == cgl500 ||
-            <player.name> == patrick339 ||
-            <player.name> == jeff1810qw ||
-            <player.name> == patrick339 ||
             <player.name> == Jon {
-                - teleport <player.name> l@96,73,285,10,-82,play2
+                - WTF <player.name> l@96,73,285,10,-82,play2
             }
 'A3':
     Type: task
