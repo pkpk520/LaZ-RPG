@@ -1,0 +1,19 @@
+W001-OP蹲下特效:
+    type: world
+    events: 
+        on player starts sneaking:
+        - if <player.group[Admins]> {
+                - playeffect <player.location> EXTINGUISH qty:1
+                - playeffect <player.location> MAGIC_CRIT qty:100
+                - invisible player state:true
+                - invisible e@3537740 state:true
+            }
+            
+        on player stops sneaking:
+        - if <player.group[Admins]> {
+                - playeffect <player.location> EXTINGUISH qty:1
+                - playeffect <player.location> MAGIC_CRIT qty:100
+                - invisible player state:false
+                - invisible e@3537740 state:false
+            }
+        

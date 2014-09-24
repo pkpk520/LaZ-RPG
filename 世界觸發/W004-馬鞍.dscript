@@ -1,0 +1,12 @@
+W004-馬鞍:
+    type: world
+    events:
+        on player right clicks entity with i@Saddle:
+        - if <player.group[Admins]> {
+                - if <context.entity> contains lazycat {
+                        - Determine cancelled
+                    } else {
+                        - mount <player>|<context.entity>
+                        - narrate <context.entity>
+                    }
+            }

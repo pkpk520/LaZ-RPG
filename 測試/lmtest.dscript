@@ -1,0 +1,257 @@
+# 我是要用類似 錯了就失敗任務 的任務
+# 所以大部分都會用同一個flag
+"Lemontest":
+    type: assignment
+    interact scripts:
+    - 2 lmtest-任務開始
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:click toggle:true
+        - trigger name:proximity toggle:true
+        
+        on enter proximity:
+        - if <player.flag[lmtest-Progress]> == null {
+                - flag lmtest-Progress:Start
+            } else {
+                - narrate '受傷的村民： 怎麼了?'
+            }
+        on exit proximity:
+        - if <player.flag[lmtest-Progress]> == GoToThere {
+                - narrate '受傷的村民： 嘶...好痛!'
+            } else {
+                - flag lmtest-Progress:!
+            }
+"lmtest-任務開始":
+    type: interact
+    steps:
+        'Greetings*':
+            click trigger:
+                script:
+                - if <player.flag[lmtest-Progress]> == Start {
+                        - narrate '受傷的村民： 我剛從上面摔了下來, 你幫我拿個藥好嗎? <red>(好|ok|不|no)'
+                        - zap 'steps.StartChat'
+                    } else if <player.flag[lmtest-Progress]> == GoToThere {
+                        - narrate '受傷的村民： 找不到路嗎? <gold>(找不到路|where|掰掰|bye|沒事|nothing)'
+                        - zap 'steps.HowToGoToMedicineShop'
+                    } else {
+                        - random 2
+                        - narrate '受傷的村民： 什麼事?'
+                        - narrate '受傷的村民： 怎麼了?'
+                    }
+                    
+        'StartChat':
+            chat trigger:
+            1:
+                trigger: '我會幫你拿的!/Regex:(?=好|ok|Ok|OK/'
+                script:
+                - narrate '受傷的村民： 快去快回吧!'
+                - flag lmtest-Progress:GoToThere
+                - run 'lmtest-快點送達'
+            2:
+                trigger: '我非常認真的拒絕你!/Regex:(?=不|no|NO|No)/'
+                script:
+                - narrate '受傷的村民： 你確定嗎?(確定|sure|不|no)'
+                - run 'lmtest-最終問話01'
+            3:
+                trigger: '/Regex:.+/'
+                script:
+                - random 3
+                - narrate '受傷的村民： <Blue><&sq><Yellow><context.message><Blue><&sq>是什麼意思?'
+                - narrate '受傷的村民： <Blue>我不懂<&sq><Yellow><context.message><Blue><&sq>的意思'
+                - narrate '受傷的村民： <Blue><&sq><Yellow><context.message><Blue><&sq>是啥米?'
+                
+        'HowToGoToMedicineShop':
+            chat trigger:
+            1:
+                trigger: '找不到路.../Regex:(?=找不到路|[wW]here|WHERE)/'
+                script:
+                - narrate '[<green>任務提示<white>] 你必須前往藥水鋪找<gold>藥水商<white>!'
+                - zap 'steps.Greetings'
+            2:
+                trigger: '掰掰! 自己想辦法吧!/Regex:(?=掰掰|拜拜|bye|Bye|BYE)/'
+                script:
+                - narrate '受傷的村民： 你確定要這樣?(確定|sure|不|no)'
+                - run 'lmtest-最終問話01'
+            3:
+                trigger: '沒有...沒什麼事../Regex:(?=沒事|nothing|Nothing|NOTHING/'
+                script: 
+                - narrate '受傷的村民： 沒事就快去吧...我很痛的!'
+                - zap 'steps.Greetings'
+            4:
+                trigger: '/Regex:.+/'
+                script:
+                - random 3
+                - narrate '受傷的村民： <Blue><&sq><Yellow><context.message><Blue><&sq>是什麼意思?'
+                - narrate '受傷的村民： <Blue>我不懂<&sq><Yellow><context.message><Blue><&sq>的意思'
+                - narrate '受傷的村民： <Blue><&sq><Yellow><context.message><Blue><&sq>是啥米?'
+
+        
+'lmtest-最終問話01':
+    type: interact
+    steps:
+        'No*':
+            chat trigger:
+            1:
+                trigger: '我就是要這樣/Regex:(?=確定|sure|Sure|SURE/'
+                script:
+                - narrate '受傷的村民： 你就不要後悔!'
+                - flag lmtest-Progress:NoTask
+            2:
+                trigger: '沒有沒有...抱歉：（/Regex:(?=不|no|No|NO/'
+                script:
+                - if <player.flag[lmtest-Progress]> == GoToThere {
+                        - zap 'steps.Greetings'
+                    }
+                
+    
+"lmtest-快點送達":
+    type: assignment
+    interact scripts:
+    - 3 lmtest-藥水商經歷
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:click toggle:true
+        - trigger name:proximity toggle:true
+        on exit proximity:
+        - if <player.flag[lmtest-Progress]> == Quickly {
+                - narrate '藥水商： 快點阿!'
+            }
+'lmtest-藥水商經歷':
+    type: interact
+    steps:
+        'TakeDrug*':
+            click trigger:
+                script:
+                - if <player.flag[lmtest-Progress]> == GoToThere {
+                        - narrate '藥水商： 怎麼了嗎？(有村民受傷|沒事|nothing)'
+                    } else if <player.flag[lmtest-Progress]> == Quickly {
+                        - narrate '藥水商： 還不快去, 救人要緊'
+                    } else {
+                        - narrate '藥水商： 你來做什麼的!'
+                    }
+            chat trigger:
+                1:
+                    trigger: '我需要藥...有鄉民受傷了../Regex:(?=有鄉民受傷)/'
+                    script:
+                    - narrate '藥水商： 快快快，拿去，到時候出了什麼差錯就慘了…'
+                    - flag lmtest-Progress:Quickly
+                    - invisible 受傷的鄉民 state:true
+                2:
+                    trigger: '沒事/Regex:(?=沒事|nothing|Nothing|NOTHING)/'
+                    script:
+                    - flag lmtest-Progress:SayTheSadThing
+                    - zap 'steps.TheEx1'
+        'TheEx1':
+        # 這算是一個隱藏任務 這裡的意思是指... playerflag不清除 但是如果不點npc他就不會觸發
+            click trigger:
+                script:
+                - if <player.flag[imtest-Progress]> == SayTheSadThing {
+                        - narrate '藥水商： 想聊聊天嗎？(好|不)'
+                    }
+            chat trigger:
+                1:
+                    trigger: '好阿/Regex:(?=好|ok|Ok|OK)/'
+                    script:
+                    - narrate '藥水商： 我曾經是一位毒販, 在各地轉賣毒品'
+                    - wait 3
+                    - narrate '藥水商： 非常好賺, 但風險實在很大'
+                    - wait 4
+                    - narrate '藥水商： 直到某天, 被海關抓住了'
+                    - wait 3
+                    - narrate '藥水商： 當時, 我想了一想'
+                    - wait 1
+                    - narrate '藥水商： 自己做的是對的還是錯的...'
+                    - wait 3
+                    - narrate '藥水商： 我很配合海關的任何步驟'
+                    - wait 1
+                    - narrate '藥水商： 抓緊了時機, 逃了出來!'
+                    - wait 5
+                    - narrate '藥水商： 喂! 你怎麼恍神了!'
+                    - wait 1
+                    - narrate '藥水商： 想繼續聽嗎?(想|want|Want|WANT|不想|dontwant|Dontwant|DontWant|DONTWANT)'
+                    - flag lmtest-Progress:StartSayTheSadThing
+                    - zap TheEx2
+                2:
+                    trigger: '誰想跟你聊天../Regex:(?=不|no|No|NO)/'
+                    script:
+                    - narrate '藥水商： 好吧, 只有一次機會…'
+                    - flag lmtest-Progress:!
+                    
+        'TheEx2':
+            click trigger:
+                script:
+                - if <player.flag[lmtest-Progress]> == StartSayTheSadThing {
+                        - narrate '藥水商： 回答我的問題!'
+                    } 
+            chat trigger:
+                1:
+                    trigger: '當然想!/Regex:(?=想|Want|want|WANT)/'
+                    script:
+                    - narrate '藥水商： 哀…想一想，還是覺得當時給海關抓就好，像現在…(怎麼了嗎|別說了)'
+                    - zap 'steps.TheEx3'
+                2:
+                    trigger: '別廢話一大堆!/Regex:(?=不想|dontwant|DontWant|DONTWANT|Dontwant)/'
+                    script:
+                    - wait 2
+                    - narrate '藥水商： 好吧, 既然這樣, 那算了...'
+                    - flag lmtest-Progress:!
+        'TheEx3':
+            chat trigger:
+                1:
+                    trigger: '/Regex:(?=怎麼了嗎|whatswrong|Whatswrong|WhatsWrong|WHATSWRONG/'
+                    script:
+                    - wait 1
+                    - narrate '藥水商： 也沒過得多好...'
+                    - wait 1
+                    - narrate '藥水商： 整天幫人家把風, 還比以前更累..'
+                    - wait 2
+                    - narrate '藥水商： 那個鄉民也是個毒販, 他想利用你來運輸毒品!'
+                    - wait 2
+                    - narrate '藥水商： 這瓶藥就是毒品。(原來如此/我去拿個東西)'
+                    - zap 'steps.TheEx4'
+                2:
+                    trigger: '/Regex:(?=別說了/'
+                    script:
+                    - wait 2
+                    - narrate '藥水商： 那我別說了…我一個老人家囉哩囉嗦的…'
+                    - flag lmtest-Progress:!
+        'TheEx4':
+            chat trigger:
+                1:
+                    trigger: '/Regex:(?=原來如此|soga|Soga|SOGA/'
+                    script:
+                    - wait 1
+                    - narrate '藥水商： 就是這麼一回事..'
+                    - wait 2
+                    - narrate '藥水商： 恩...謝謝你!'
+                    - wait 3
+                    - narrate '讓我說出了心事...這些獎勵給你吧!'
+                    - flag lmtest-Progress:Gift01
+'lmtest-領取獎勵':
+    type: task
+    script:
+    - if <player.flag[lmtest-Progress]> == Gift01 {
+            - give '' 
+            - narrate '[<aqua>任務獎勵<white>]： <gold>300 元'
+            - flag lmtest-Progress:!
+        } else if <player.flag[lmtest-Progress]> == 
+            - give ''
+            - narrate '[<aqua>任務獎勵<white>]： <gold> 元'
+            - flag lmtest-Progress:!
+        }
+        
+    # ! 記得改Nochance
+    
+'後續':
+
+# - if <player.flag[lmtest-CD1]> == null {
+                        # - chat '有沒有人來救救我阿...'
+                        # - flag lmtest-CD1:<server.current_time_millis>
+                    # } else if <math.as_int:<player.flag[lmtest-CD1]>+10000> > <server.current_time_millis> {
+                        # - narrate '[<green>任務提示<white>]時間還沒到'
+                    # } else {
+                        # - chat '有沒有人來救救我阿...'
+                        # - flag lmtest-CD1:!
+                    # }

@@ -1,0 +1,7 @@
+# 用來把變更過的flag或listener寫入save.yml
+
+task_寫入Save:
+    type: task
+    script:
+    - ^execute as_server 'denizen save'
+    - ^execute as_server 'citizens save'

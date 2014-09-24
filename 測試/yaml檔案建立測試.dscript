@@ -1,0 +1,12 @@
+
+"yamltest":
+    type: world
+    events:
+        on ytest command:
+        - inject locally ytesthandler
+        
+    ytesthandler:
+    - determine fulfilled passively
+    - yaml write:my.key value:myvalue id:ytest 
+    - yaml savefile:data/ytest.yml id:ytest
+    - narrate "ytest executed"

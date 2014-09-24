@@ -1,0 +1,106 @@
+    
+"NPC-公會註冊":
+    type: assignment
+    interact scripts:
+    - 2 NPC-公會註冊act
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        
+"NPC-公會註冊act":
+    type: interact
+    steps:
+        'Greeting*':
+            click trigger:
+                script:
+                - narrate "<blue><npc.name><white>： 你好, 需要什麼服務嗎?"
+                - ^narrate "*---------------服務項目---------------"
+                - ^narrate "*- 1. 創立公會 <red>(需要先完成公會創立任務)"
+                - ^narrate "*- 2. 公會創立任務"
+                - ^narrate "*- 3. <gray>解散公會"
+                    
+                # - if 沒公會沒完成任務 {
+                        # - narrate "*- 1. 創立公會 <red>(需要先完成公會創立任務)"
+                    # } else if 沒公會已完成任務 {
+                        # - narrate "*- 1. 創立公會 <green>(已完成公會創立任務)"
+                    # } else if 有公會 {
+                        # - narrate "*- <gray>1. 創立公會 (你已經有公會)"
+                    # }
+                # - if 沒公會 {
+                        # - narrate "*- 2. 公會創立任務"
+                    # } else if 有公會 {
+                        # - narrate "*- <gray>2. 公會創立任務 (你已經有公會)"
+                    # }
+                # - if 沒公會 {
+                        # - narrate "*- <gray>3. 解散公會"
+                    # } else if 有公會不是會長 {
+                        # - narrate "*- 3. 解散公會 <red>(你不是公會會長)"
+                    # } else if 有公會是會長 {
+                        # - narrate "*- 3. 解散公會"
+                    # }
+                
+            chat trigger:
+                1:
+                    trigger: "我想要創立公會/Regex:(?=創立|1)/"
+                    script: 
+                    - ^engage
+                    - inject yamltest p:Talking
+                    - ^disengage
+                    
+                2:
+                    trigger: "我想要執行公會創立任務/Regex:(?=任務|2)/"
+                    script: 
+                    - ^engage
+                    - narrate "任務www"
+                    - ^disengage
+                    
+                3:
+                    trigger: "我想要解散公會/Regex:(?=解散|3)/"
+                    script: 
+                    - ^engage
+                    - narrate "解散www"
+                    - ^disengage
+                  
+
+"Guild_創立公會":
+    type: task
+    script: 
+    - narrate a
+
+    Talking: 
+    - narrate b
+    
+"Guild_創立任務":
+    type: task
+    script: 
+    - narrate a
+
+    Talking: 
+    - narrate b
+    
+
+"NPC-公會倉庫管理":
+    type: assignment
+    interact scripts:
+    - 2 NPC-公會倉庫管理act
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+                   
+"NPC-公會功能諮詢":
+    type: assignment
+    interact scripts:
+    - 2 NPC-公會功能諮詢act
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+                   
+"NPC-公會物品販售":
+    type: assignment
+    interact scripts:
+    - 2 NPC-公會物品販售act
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+                   
+                    

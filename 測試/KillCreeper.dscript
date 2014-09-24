@@ -1,0 +1,44 @@
+
+KillCreepersAssignment:
+  Type: Assignment
+  Interact Scripts:
+  - 2 KillCreepersStart
+  - 1 QuestRewardFarmer
+KillCreepersStart:
+  Type: Interact
+  Requirements:
+    Mode: All
+    List: 
+    - -script finished 'script:KillCreepersStart'
+  Steps:
+    1:
+      Chat Trigger:
+        1:
+          Trigger: /Regex:Hi|Hello|Hey/
+          Script:
+          - chat "<player.name>! You have to help me! There's been a sudden boom in Creeper population!"
+          - wait 2
+          - chat "I need you to help control the crowd, and kill 10 creepers for me!"
+          - chat "When you do, I'll give you a great reward!"
+          - listen kill 'ID:Kill10Creepers' 'SCRIPT:Creepersdead' 'type:entity' 'target:creeper' 'qty:10'
+QuestRewardFarmer:
+  Type: Interact
+  Requirements:
+    Mode: All
+    List:
+    - script finished 'script:KillCreepersStart'
+    - -script finished 'script:QuestRewardFarmer'
+    - Flagged 'CreepersKilled:10'
+  Steps:
+    1:
+      Chat Trigger:
+        1:
+          Trigger: /Regex:Hi|Hello|Hey/
+          Script:
+          - chat "Ah! I heard of your success! Here, for all your hard work..."
+          - give 'ITEM:DIAMOND' 'qty:3'
+CreepersDead:
+  Type: Task
+  Script:
+  - narrate "You have killed 10 creepers! Return to Farmer to claim your reward!"
+  - flag CreepersKilled:10

@@ -1,0 +1,72 @@
+
+
+"Q008-公會測試":
+    type: assignment
+    interact scripts: 
+    - 2 Q008-公會測試act
+    actions: 
+        on assignment: 
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:false
+        - trigger name:click toggle:true
+        
+"Q008-公會測試act":
+    type: interact
+    steps: 
+        '1':
+            click trigger: 
+                script: 
+                - ^narrate "1.顯示紙的名稱"
+                - ^narrate "2.顯示書的名稱,頁數,作者,內容"
+                - ^narrate "3.創公會"
+               
+            
+            chat trigger: 
+                1:
+                    trigger: /Regex:1/
+                    script: 
+                    - if <player.item_in_hand.id> == 339
+                        {
+                        - ^narrate "<el@<player.item_in_hand>.after[name=].before[]]>"
+                        }
+                        else
+                        {
+                        - ^narrate "這不是紙"
+                        }
+                2:
+                    trigger: /Regex:2/
+                    script:
+                    - define item player.item_in_hand
+                    - if <player.item_in_hand.id> == 387
+                        {
+                        - ^narrate "名稱=><%item%.book.title>"
+                        - ^narrate "頁數=><%item%.book.page_count>"
+                        - ^narrate "作者=><%item%.book.author>"
+                        - ^narrate "內容=><%item%.book.pages>"
+                        }
+                        else
+                        {
+                        - ^narrate "這不是書"
+                        }
+                3:
+                    trigger: /Regex:3/
+                    script: 
+                    - ^narrate "請輸入公會名字"
+                    
+                    - <n@npc.script> set Q008-公會創立
+                4: 
+                    trigger: /Regex:.+/
+                    script:
+                    - ^narrate "test"
+"Q008-公會創立":
+    type: interact
+    steps: 
+        1:
+            click trigger:
+                script:
+                - ^narrate "請輸入公會名稱"
+            chat trigger:
+                1:
+                    trigger: '/Regex:.+/'
+                    script: 
+                    

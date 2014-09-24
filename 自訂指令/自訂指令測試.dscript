@@ -1,0 +1,36 @@
+
+#'CMD-crap': 
+#    type: world
+#    events:
+#        on kill command:
+#        - if <context.args[0]> contains aaa {
+#                - playeffect <player.location> effect:mob_spell qty:100 offset:0.5
+#            } else {
+#                - playeffect <player.location> effect:mob_spell qty:100 data:1 offset:0.5
+#            }
+#        - narrate '成功執行 <context.command>'
+#        - narrate 'arg list <context.raw_args>'
+#        - narrate 'arg0 <context.args[0]>'
+#        - narrate 'arg1 <context.args[1]>'
+#        - narrate 'arg2 <context.args[2]>'
+#        - determine fulfilled
+CMD-ID: 
+    type: world
+    events: 
+        on id command:
+        - narrate "<gold>ID-- <white><player.item_in_hand.id>"
+        - narrate "<gold>Name-- <white><player.item_in_hand>"
+        - determine fulfilled
+    
+
+CMD-questlist: 
+    type: world
+    events: 
+        on ql command: 
+        - if <player.flag[Q001-Progress]> == KillZombies {
+                - narrate "Q001-惱人的殭屍<green>(進行中)"
+            } else if <player.flag[Q001-Progress]> == DoneZombies {
+                - narrate "Q001-惱人的殭屍<green>(完成)"
+            }
+        - determine fulfilled
+            

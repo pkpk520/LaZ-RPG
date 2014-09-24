@@ -1,0 +1,20 @@
+
+
+Dough: 
+   type: item 
+   material: 260 
+   display name: 超神超好ㄘ的蘋果
+   lore:
+   - '<gold>5<white>秒內回復<red>4HP'
+   - '<green>因為太好ㄘ了, 有很高的機率會造成頭暈'
+
+Bread: 
+   type: world 
+    
+   events: 
+     on player consumes i@Dough: 
+      - potion REGENERATION <player> duration:5s power:1
+      - random 3
+      - potion REGENERATION <player> duration:5s power:1
+      - potion REGENERATION <player> duration:5s power:1
+      - potion CONFUSION <player> duration:5s power:1

@@ -1,0 +1,25 @@
+
+'CMD_Denizen_short': 
+    type: world
+    events:
+        on drls command:
+        - execute as_player "denizen reload scripts"
+        - announce "<green>Scripts reloaded"
+        - determine fulfilled
+        
+        on drlsv command:
+        - execute as_player "denizen reload saves"
+        - announce "<green>Saves reloaded"
+        - determine fulfilled
+        
+        on drla command:
+        - execute as_player "denizen reload -a"
+        - announce "<green>All reloaded"
+        - determine fulfilled
+        
+        on dsv command:
+        - execute as_player "denizen save"
+        - announce "<green>Flag saved"
+        - determine fulfilled
+        
+        

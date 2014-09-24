@@ -1,0 +1,72 @@
+
+"achiv_成就收藏箱":
+    type: world
+    events:
+        on player opens inventory:
+        - ^if <player.location.cursor_on[10].in_region[AchivChest]> && <player.location.cursor_on[10].material> != m@chest {
+                - narrate "[<aqua>系統<white>] <gray>請嘗試換個角度開啟箱子"
+                - determine cancelled
+            }
+        - ^if <player.location.cursor_on[10].in_region[AchivChest]> && <player.location.cursor_on[10].material> == m@chest {
+                - ^if <s@achiv_載入箱子.cooldown> == "0t" inject achiv_載入箱子
+                - ^if !<yaml[AchivChest].contains[achivchest.registed.<player.name>]> || <yaml[AchivChest].read[achivchest.chests.<yaml[AchivChest].read[achivchest.registed.<player.name>]>.location]> !contains <player.location.cursor_on[10]> {
+                        - ^if !<player.in_group[Admins]> {
+                                - ^narrate "[<aqua>系統<white>] <red>這收藏箱不屬於你"
+                                - ^determine cancelled
+                            } else {
+                                - foreach <yaml[AchivChest].list_keys[achivchest.chests]> {
+                                        - if <yaml[AchivChest].read[achivchest.chests.%value%.location]> contains <player.location.cursor_on[10]> {
+                                                - if <yaml[AchivChest].read[achivchest.chests.%value%.owner]> != ''
+                                                        narrate "<gray>用管理員權限繞過了箱子所有權的檢查...<n>箱子屬於- <yaml[AchivChest].read[achivchest.chests.%value%.owner]>"
+                                                    else 
+                                                        narrate "<gray>用管理員權限繞過了箱子所有權的檢查...<n>這個箱子沒有人使用"
+                                    }
+                            }
+                    }
+            }
+            
+"achiv_載入箱子":
+    type: task
+    script:
+    - ^cooldown 1m global
+    - ^yaml load:data/AchivChest.yml id:AchivChest
+            
+            
+        # on player opens inventory:
+        # - determine cancelled
+        # - if <player.location.cursor_on.in_region[AchivChest]> {
+                # - announce "bla"
+            # }
+        
+        # on player right clicks m@chest:
+        # - if <player.location.cursor_on.in_region[AchivChest]> {
+                # - announce "<green>- define <context.location>"
+            # }
+        # - flag server test1:!
+        # - flag server test2:++
+        # - foreach li@A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X {
+                # - define x %value%
+                # - foreach li@1|2|3 {
+                        # - define y %value%
+                        # - foreach li@左|右 {
+                                # - define z %value%
+                                # - flag server test1:++
+                                # - if <server.flag[test1].as_int> == <server.flag[test2].as_int> {
+                                        # - ^foreach li@1|0|-1 {
+                                                # - ^define j %value%
+                                                # - ^foreach li@1|0|-1 {
+                                                        # - ^define k %value%
+                                                        # - ^if <context.location.add[%j%,0,%k%].material> == m@chest && <context.location.add[%j%,0,%k%]> != <context.location> {
+                                                                # - announce "<green>- define %x%-%y%-%z%"
+                                                                # - yaml "write:define %x%-%y%-%z%" "value:li@<context.location.add[%j%,0,%k%]>|<context.location>" id:chest
+                                                                # - yaml savefile:data/chest.yml id:chest
+                                                            # }
+                                                    # }
+                                            # }
+                                    # }
+                            # }
+                    # }
+            # }
+        
+        
+        

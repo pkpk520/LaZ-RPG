@@ -1,0 +1,24 @@
+"April":
+    type: assignment
+    interact scripts:
+    - 0 NO April
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+No April:
+    type: interact
+    steps:
+        1:
+            chat trigger:
+                1:
+                    trigger: '/四月/'
+                    script:
+                    - random 7
+                    - chat '你罵髒話! 我要跟你媽講!'
+                    - chat '猴! 你罵髒話!'
+                    - chat '那個字是被禁止的!'
+                    - chat '喔! 幹你娘勒!'
+                    - chat '幹你娘!'
+                    - chat '靠杯喔?!'
+                    - chat '你有事嗎?!'
+                    - chat '三洨 >_>'

@@ -1,0 +1,288 @@
+
+"他媽的公會系統":
+    type: world
+    events:
+        on g command:
+        - inject locally GuildChatHandler
+        on guild command:
+        - inject locally GuildCmdHandler
+    
+    
+    ## +------------------------------
+    ## + 預先定義
+    ## +------------------------------
+    GuildPredefine:
+    - define 安安假裝我有公會 true
+    - define 安安假裝對方有公會 true
+    - define cmdtag [<aqua>公會<white>]
+    - define arg1 <context.args.get[1]>
+    - define arg2 <context.args.get[2]>
+    - define arg3 <context.args.get[3]>
+    - define argsize <context.args.size>
+    - define rawarg <context.raw_args>
+    - determine fulfilled passively
+    
+    
+    ## +------------------------------
+    ## + 公會頻道
+    ## +------------------------------
+    
+    # 跑判斷
+    GuildChatHandler:
+    - inject locally CheckIsInGuildClear
+    - inject locally GuildPredefine
+    - if %arg1% == null {
+            - narrate "%cmdtag% <red>你沒有輸入任何訊息"
+            - narrate "<red>- /g <訊息>"
+            - queue clear
+        }
+    - inject locally GuildChatSend
+    
+    # 送出內容
+    GuildChatSend:
+    - foreach <server.list_online_player> {
+            - if %value%公會 = <player>公會 && %value% != <player> {
+                    - narrate "<green><player.name>： %rawarg%"
+                }
+        }
+    
+    
+    ## +------------------------------
+    ## + guild 指令
+    ## +------------------------------
+    GuildCmdHandler:
+    - inject locally GuildPredefine
+    - if %arg1% == "list"
+            inject locally GuildCmdList
+        else if %arg1% == "find"
+            inject locally GuildCmdFind
+        else if %arg1% == "create"
+            inject locally GuildCmdCreate
+        else if %arg1% == "disband"
+            inject locally GuildCmdDisband
+        else if %arg1% == "invite"
+            inject locally GuildCmdInvite
+        else if %arg1% == "accept"
+            inject locally GuildCmdAccept
+        else if %arg1% == "deny"
+            inject locally GuildCmdDeny
+        else if %arg1% == "kick"
+            inject locally GuildCmdKick
+        else if %arg1% == "join"
+            inject locally GuildCmdJoin
+        else if %arg1% == "quit"
+            inject locally GuildCmdQuit
+        else if %arg1% == "motd"
+            inject locally GuildCmdMotd
+        else if %arg1% == "rank"
+            inject locally GuildCmdRankHandler
+        else if %arg1% == "chest"
+            inject locally GuildCmdChest
+        else if %arg1% == "members"
+            inject locally GuildCmdMembers
+        else if %arg1% == "help"
+            inject locally GuildCmdHelp
+        else if %arg1% == null
+            inject locally GuildCmdStatus
+        else inject locally GuildCmdNone
+      
+    # 列出公會清單
+    GuildCmdList:
+    - yaml load:guilddb.yml id:guilddb
+    - list guilds
+    
+    # 查詢目標的公會相關資訊
+    GuildCmdRankFind:
+    - inject locally CheckIsInGuildClear
+    - if %arg2% == null {
+            - narrate "*- /guild find (玩家|公會名|公會Tag) -> 查詢目標的公會相關資訊"
+        } else {
+            - 搜尋
+            - if <%arg2%.first_played> || <%arg2%.has_played_before> {
+                    - if %arg2% 有公會 {
+                            - 列出玩家公會資訊
+                        }
+                } else if 找不到玩家 搜尋公會名 {
+                
+                } else if 找不到公會名 搜尋Tag {
+                
+                } else {
+                    - 查無目標
+                }
+        }
+    
+    # 創立公會
+    GuildCmdCreate:
+    -
+    
+    # 解散公會
+    GuildCmdDisband:
+    -
+    
+    # 邀請加入公會
+    GuildCmdInvite:
+    - inject locally CheckIsInGuildClear
+    - if !<%arg1%.is_online> {
+            - narrate "%cmdtag%： 對方不在線上"
+            - queue clear
+        }
+    - if 
+    
+    # 同意邀請/確認解散公會
+    GuildCmdAccept:
+    - if flag guild-invite = null && flag guild-disband == null queue clear
+    
+    # 拒絕邀請/取消解散公會
+    GuildCmdDeny:
+    - if flag guild-invite = null && flag guild-disband == null queue clear
+    
+    # 踢出公會
+    GuildCmdKick:
+    - 
+    
+    # 申請加入公會
+    GuildCmdJoin:
+    - 
+    
+    # 離開公會
+    GuildCmdQuit:
+    - inject locally CheckIsInGuildClear
+    - 
+    
+    # 公會公告
+    GuildCmdMotd:
+    - inject locally CheckIsInGuildClear
+    - 
+    
+    # 開啟公會倉庫
+    GuildCmdChest:
+    - inject locally CheckIsInGuildClear
+    - if 公會會長 {
+            - if %arg2% == null {
+                    - 列出倉庫清單
+                }
+            - 開啟倉庫%arg2%號
+        } else {
+            - narrate "%cmdtag% 只有會長能用指令開啟倉庫, 請至公會塔的公會NPC處使用公會倉庫功能"
+        }
+    
+    # 列出公會成員
+    GuildCmdMembers:
+    - inject locally CheckIsInGuildClear
+    - 
+    
+    # guild 指令help
+    GuildCmdHelp:
+    - narrate ""
+    - narrate "*--------------- Guild Help ---------------"
+    - narrate "<red>>>部分指令已經由公會NPC接管, 請至公會塔找公會NPC詢問相關服務
+            <n>*- /g -> 公會頻道
+            <n>*- /guild list -> 列出公會清單
+            <n>*- /guild find -> 查詢目標的公會相關資訊
+            <n><red>*- /guild create -> 創立新的公會
+            <n>*- /guild disband -> 解散公會
+            <n>*- /guild invite -> 邀請玩家加入公會
+            <n>*- /guild accept -> 接受加入公會的邀請
+            <n>*- /guild deny -> 拒絕加入公會的邀請
+            <n>*- /guild kick -> 將指定成員踢出公會
+            <n>*- /guild join -> 申請加入公會
+            <n>*- /guild quit -> 離開目前公會
+            <n>*- /guild rank -> 顯示或設定公會職位
+            <n>*- /guild motd -> 顯示或設定公會公告
+            <n><red>*- /guild chest -> 開啟公會倉庫(指令限會長)
+            <n>*- /guild members -> 列出公會成員"
+    
+    # 公會資訊
+    GuildCmdStatus:
+    - inject locally CheckIsInGuildReturn
+    - if %return% {
+            - narrate "%cmdtag% 所屬公會： €公會名€"
+            - narrate "公會等級： €等級€ 公會經驗值： €經驗€ 個人貢獻度"
+            - narrate "職位"
+        } else {
+            - narrate "%cmdtag% 你目前不屬於任何公會"
+        }
+    - narrate ""
+    - narrate "%cmdtag% 查詢功能請輸入 <gold>/guild help"
+    
+    GuildCmdNone:
+    - narrate "%cmdtag% '%arg1%' 功能不存在, 輸入 <gold>/guild help<white> 查詢可用功能"
+    
+    
+    ## +------------------------------
+    ## + 公會職位
+    ## +------------------------------
+    
+    # 公會職位handler
+    GuildCmdRankHandler:
+    - inject locally CheckIsInGuildClear
+    - if %arg2% == null {
+            - inject locally GuildCmdRankList
+        } else if %arg2% == "perm" {
+            - inject locally GuildCmdRankPerm
+        } else if %arg2% == "help" {
+            - inject locally GuildCmdRankHelp
+        } else if %arg2% == "edit" {
+            - inject locally GuildCmdRankEdit
+        } else {
+            - narrate "%cmdtag% '%arg2%' 功能不存在, 輸入 <gold>/guild rank help<white> 查詢可用功能"
+        }
+    
+    # 列出清單
+    GuildCmdRankList:
+    - 列出職位清單
+    - narrate "輸入 /guild rank help 查詢幫助"
+    
+    # 列出權限
+    GuildCmdRankPerm:
+    - 列出職位+權限
+    
+    # 指令幫助
+    GuildCmdRankHelp:
+    - narrate ""
+    - narrate "*---------- Guild Rank Help ----------"
+    - narrate "*- /guild rank -> 列出公會職位"
+    - narrate "*- /guild rank perm -> 列出公會職位與權限"
+    - narrate "*- /guild rank edit -> 編輯公會職位"
+    - narrate "*- /guild rank edit help -> 編輯公會職位說明"
+    
+    # 編輯職位
+    GuildCmdRankEdit:
+    - 
+    
+    ## +------------------------------
+    ## + 副程式
+    ## +------------------------------
+    
+    # 如果user沒公會則clear
+    CheckIsInGuildClear:
+    - if 沒公會 {
+            - narrate "%cmdtag% 你目前不屬於任何公會"
+            - queue clear
+        }
+        
+    # 回傳user是否有公會
+    CheckIsInGuildReturn:
+    - if 有公會 {
+            - define return true
+        } else {
+            - if %安安假裝我有公會% {
+                    - define return true
+                } else {
+                    - define return false
+                }
+        }
+        
+    # 回傳指定玩家是否有公會
+    CheckTargetIsInGuildReturn:
+    - if 有公會 {
+            - define return true
+        } else {
+            - if %安安假裝對方有公會% {
+                    - define return true
+                } else {
+                    - define return false
+                }
+        }
+        
+    

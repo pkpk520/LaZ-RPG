@@ -1,0 +1,45 @@
+
+# "World-聊天訊息框":
+    # type: world
+    # debug: false
+    # events:
+    # on server start:
+    # - run lumichatbubbleloop
+    
+    # on stop command:
+    # - if <context.console> || <player.is_op> {
+            # - foreach <server.list_online_players> {
+                    # - remove <%value%.flag[chatbubble].as_npc>|<%value%.flag[chatbubblecarrier].as_npc>
+                # }
+        # }
+        
+    # on player joins:
+    # - inject locally path:initiatechatbubble
+    
+    # on player quits:
+    # - remove <player.flag[chatbubble].as_npc>|<player.flag[chatbubblecarrier].as_npc>
+    
+    # on player chats:
+    # - flag "lastchat:<&e><context.message.substring[1,64]>" duration:10s
+    
+    # initiatechatbubble:
+    # - create e@wither_skull[velocity=0,0,0] chatbubblecarrier <player.location> save:chatbubblecarrier
+    # - create e@slime[size=-2;velocity=0,0,0;custom_name=<player.flag[lastchat]||>;custom_name_visibility=true] '<&b>' <player.location> save:chatbubble
+    # - execute as_server 'npc select <entry[chatbubble].created_npc.id>'
+    # - execute as_server 'npc size -2'
+    # - mount <entry[chatbubble].created_npc>|<entry[chatbubblecarrier].created_npc> <player.location.add[0,2,0]>
+    # - flag chatbubble:<entry[chatbubble].created_npc>
+    # - flag chatbubblecarrier:<entry[chatbubblecarrier].created_npc>
+    
+# lumichatbubbleloop:
+    # type: task
+    # debug: false
+    # script:
+    # - ^foreach <server.list_online_players> {
+            # - ^if <%value%.flag[chatbubble].as_npc.name.substring[1,60]||> != <%value%.flag[lastchat].strip_colors.substring[1,60]||> rename npc:<%value%.flag[chatbubble].as_npc> "<%value%.flag[lastchat]||<&e>>"
+        # }
+    # - ^foreach <server.list_online_players> {
+            # - ^mount <%value%.flag[chatbubble].as_npc>|<%value%.flag[chatbubblecarrier].as_npc> <%value%.location.add[0,3,0]>
+        # }
+    # - run lumichatbubbleloop delay:1t
+

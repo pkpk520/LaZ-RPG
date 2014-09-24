@@ -1,0 +1,20 @@
+
+# 經測試腳本定義不能為中文 (imperial_sword) 會錯誤
+# 玩家看到的物品名稱會是 display name (尚方寶劍)
+# material 是物品ID或物品名 (349 / fish)
+
+# 附魔用的是內部名稱 不是我們平常看到的那個 Sharpness > damage_all 
+# 在前面資料夾有附魔名稱.txt可以參考
+
+imperial_sword: 
+    type: item
+    material: 349
+    display name: 尚方寶劍
+    lore:
+    - "娘從家裡帶來給我的寶劍."
+    enchantments:
+    - damage_all:5
+    recipe:
+    - air|air|air
+    - dirt|349|dirt
+    - air|air|air

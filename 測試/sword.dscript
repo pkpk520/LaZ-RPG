@@ -1,0 +1,180 @@
+VaranirGuard:
+    type: assignment
+    interact scripts:
+    - 10 VaranirGuardInteraction
+    actions:
+        on assignment:
+            - trigger name:click toggle:true
+            - trigger name:proximity toggle:true radius:5
+            - trigger name:chat toggle:true
+            - trigger name:damage toggle:true
+            - lookclose state:true
+            - equip hand:267 head:306 chest:306 legs:300 boots:301
+            - narrate "Make sure that this NPC was a Sentry BEFORE you added this assignment, or he will be too weak."
+            - narrate "Change speed to 0.7, health to 40, armor to 5, turn criticals off, add monsters and PvSentry to target list, increase respawn."
+VaranirGuardInteraction:
+    type: interact
+    steps:
+        1:
+            proximity trigger:
+                entry:
+                    script:
+                    - if 267|268|272|276 contains <player.item_in_hand.id> {
+                        - if 268 contains <player.item_in_hand.id> {
+                            - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                            - ^random 3
+                            - ^chat "<Yellow>My son uses the same sword as you!"
+                            - ^chat "<Yellow>What a cute sword you have there, <white><player.name><yellow>!"
+                            - ^chat "<Yellow>Is that <white>wooden sword <yellow>a gift for your kid?
+                            } else {
+                            - if 272 contains <player.item_in_hand.id> {
+                                - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                                - ^random 3
+                                - ^chat "<Yellow>What are you going to cut with that <white>stone sword<yellow>, a butterfly?"
+                                - ^chat "<Yellow>That's a pathetic weapon, <white><player.name><yellow>!"
+                                - ^chat "<Yellow>That <white>stone sword<yellow> doesn't look very sharp, <white><player.name><yellow>.
+                                } else {
+                                - if 267 contains <player.item_in_hand.id> {
+                                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                                    - ^random 3
+                                    - ^chat "<Yellow>Hey <white><player.name><yellow>, we use the same weapon!"
+                                    - ^chat "<Yellow>That <white>iron sword<yellow> looks almost as shiny as mine."
+                                    - ^chat "<Yellow>That <white>iron sword<yellow> is a weapon fit for an adventurer like you."
+                                    } else { 
+                                    - if 276 contains <player.item_in_hand.id> {
+                                        - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                                        - ^random 3
+                                        - ^chat "<Yellow>Wow <white><player.name><yellow>, that's a fearsome looking weapon!"
+                                        - ^chat "<Yellow>I wish I could afford a <white>diamond sword<yellow> like yours."
+                                        - ^chat "<Yellow>That sword of yours is a work of fine craftsmanship."
+                                        } else {
+                                        - chat "<Yellow>Move along, citizen."
+                                        }
+                        } else {
+                        - playsound location:<npc.location> sound:VILLAGER_NO pitch:0.6
+                        - ^random 9
+                        - ^chat "<yellow>Did someone steal your sweetroll?"
+                        - ^chat "<yellow>I used to be an adventurer like you, but then I got married."
+                        - ^chat "<yellow>No lollygagging!"
+                        - ^chat "<yellow>Welcome to Varanir, <white><player.name><yellow>!"
+                        - ^chat "<yellow>This is a civilized city, so please behave."
+                        - ^chat "<yellow>I saw a <white>goblin encampment <yellow>not far from here."
+                        - ^chat "<yellow>Disrespect the law, you disrespect me."
+                        - ^chat "<yellow>I'm keeping an eye on you, <white><player.name><yellow>."
+                        - ^chat "<yellow>Ask a guard when you are in need of directions."
+                        }
+            click trigger:
+                script:
+                - if 267|268|272|276 contains <player.item_in_hand.id> {
+                    - playsound location:<npc.location> sound:VILLAGER_NO pitch:0.6 
+                    - ^random 4
+                    - ^chat "<yellow>A guard might get nervous, a man approaches with his weapon drawn..."
+                    - ^chat "<yellow>Sheathe that <player.item_in_hand.data>, citizen."
+                    - ^chat "<yellow>You come up to me, weapon drawn? You looking for a beating?"
+                    - ^chat "<yellow>Put away that <player.item_in_hand.id> before you talk to me!"
+                    } else {
+                    - playsound location:<npc.location> sound:VILLAGER_HAGGLE pitch:0.6
+                    - ^random 9
+                    - ^chat "<yellow>Hello <green><player.name><yellow>. Do you need something?"
+                    - ^chat "<yellow>What can I help you with today?"
+                    - ^chat "<yellow>Good day citizen."
+                    - ^chat "<yellow>How may I be of aid?"
+                    - ^chat "<yellow>Keep it short."
+                    - ^chat "<yellow>Please keep it short, I'm on duty."
+                    - ^chat "<yellow>Keep it short, I'm on duty."
+                    - ^chat "<yellow>Do you need directions?"
+                    - ^chat "<yellow>What do you want, peasant?"
+                    - wait 1
+                    - ^narrate "<gray>[<red>0<gray>]<green>Residential District"
+                    - ^narrate "<gray>[<red>1<gray>]<green>Shopping District"
+                    - ^narrate "<gray>[<red>2<gray>]<green>Harbor District"
+                    - ^narrate "<gray>[<red>3<gray>]<green>Law District"
+                    - ^narrate "<gray>[<red>4<gray>]<green>Noblesse"
+                    - ^narrate "<gray>[<red>5<gray>]<green>Dunnglen Mine"
+                    - ^narrate "<gray>[<red>6<gray>]<green>The End"
+                    - ^narrate "<gray>[<red>7<gray>]<green>Goblin Encampment"
+                    }
+            chat trigger:
+                1:
+                    trigger: <&lb>/0/<&rb> - Where is the /residential/ district?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>The residential district is in the southwest part of town. It is marked by blue lamp posts."
+                2:
+                    trigger: <&lb>/1/<&rb> - Where is the /shopping/ district?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>The shopping district is in the norhtwest part of town. It is marked by red lamp posts."
+                3:
+                    trigger: <&lb>/2/<&rb> - Where is the /harbor/ district?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>The harbor district is in the southeast part of town, marked by white lamp posts."
+                    - wait 3
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>Some of the ships in the dock may sail to other settlements, if that's your kind of thing."
+                4:
+                    trigger: <&lb>/3/<&rb> - Where is the /law/ district?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>The law district is in the northeast part of town, marked by black lamp posts."
+                    - wait 3
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>Usually, only guards and criminals go there. Perhaps you'd like to sign up?"                  
+                5:
+                    trigger: <&lb>/4/<&rb> - How do I reach /Noblesse/?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>Just outside the <green>Varanir Gates<yellow> is an ancient circle of stones. You can't miss it."
+                    - wait 3
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>Walk up to its center and you'll be transported to <green>Noblesse<yellow>."               
+                6:
+                    trigger: <&lb>/5/<&rb> - How do I reach /Dunnglen/, the public /mine/?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.7
+                    - ^chat "<yellow>Exit Varanir through the main gate and follow the road west. You should reach it within 2 minutes, it's hard to miss."
+                7:
+                    trigger: <&lb>/6/<&rb> - How do I get to the /End/?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>Why would anyone want to go there? Either way, a <green>meteor<yellow> crashed down outside the city gates."
+                    - wait 3
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>There's an <green>Endportal<yellow> inside the meteor. Scary stuff!"
+                8:
+                    trigger: <&lb>/7/<&rb> - I heard rumors of a /goblin/ encampment. Do you know where it is?
+                    script:
+                    - wait 2
+                    - playsound location:<npc.location> sound:VILLAGER_YES pitch:0.6
+                    - ^chat "<yellow>That quest has not been made yet. Wait, what is a quest?"
+            damage trigger:
+                script:
+                - ^engage duration:45
+                - playsound location:<npc.location> sound:VILLAGER_NO pitch:0.1
+                - ^random 6
+                - ^chat "<yellow>You are going to regret that!"
+                - ^chat "<yellow>You dare defy the Varanir Guards?"
+                - ^chat "<yellow>Ouch! You will pay for your insolence!"
+                - ^chat "<yellow>You picked a fight with the wrong guard!"
+                - ^chat "<yellow>Stop right there, you criminal scum!"
+                - ^chat "<yellow>Stop! You have violated the law!"
+            Npcdeath Trigger:
+                script:
+                - ^cooldown global 10s
+                - playsound location:<npc.location> sound:VILLAGER_NO pitch:0.05
+                - ^random 4
+                - ^chat "<yellow>Aaargh!"
+                - ^chat "<yellow>Ugh..."
+                - ^chat "<yellow>What...is this white light?"
+                - ^chat "<yellow>Everything's turning to black..."
+                - flag player VaranirGuardsKilled:++
+                - narrate "<red>You have now killed <blue><player.flag[VaranirGuardsKilled].asint><red> Varanir guards."
+                - ^narrate "<red>If you kill too many, it may have negative consequences for your reputation here."

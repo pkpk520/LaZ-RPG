@@ -1,0 +1,196 @@
+
+
+"NPC商店測試":
+    type: assignment
+    interact scripts:
+    - 2 NPC-Shop
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:false
+        
+
+"NPC-Shop":
+    type: interact
+    steps:
+        'Greetings*':
+            click trigger:
+                script:
+                - ^narrate "點擊觸發開啟商店"
+                - inventory open d:in@storeaa 
+            
+            chat trigger:
+                1:
+                    trigger: '/Regex:.+/'
+                    script:
+                    - ^narrate "交談觸發開啟商店"
+                    - inventory open d:in@storeaa 
+    
+"箱子商店測試":
+    type: world
+    events: 
+        on player right clicks CHEST: 
+        - if <context.location.simple> == -1367,179,1075,Main { 
+                - inventory open d:in@shop1 
+                - DETERMINE CANCELLED 
+            }
+
+        on player clicks in inventory:
+        - if <context.inventory.title> != 商店第一頁 && <context.inventory.title> != 商店第二頁 {
+                - queue clear
+            }
+        
+        - if <context.inventory.title> == 商店第一頁 {
+                - define szInvName in@shop1
+            } else if <context.inventory.title> == 商店第二頁 {
+                - define szInvName in@shop2
+            }
+            
+        - if <context.item> == i@btn_readme {
+                - inventory open d:%szInvName%
+                - determine cancelled
+                - queue clear
+            } else if <context.item> == i@btn_next {
+                - inventory open d:in@shop2
+                - determine cancelled
+                - queue clear
+            } else if <context.item> == i@btn_prev {
+                - inventory open d:in@shop1
+                - determine cancelled
+                - queue clear
+            }
+            
+        - if <context.slot_type> != quickbar && <context.slot> less 9 {
+                - if <context.item> == i@Goods1_shop {
+                        - define iCost 5
+                        - define szItem i@Goods1
+                        - define iQty 1
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@Goods2_shop {
+                        - define iCost 5
+                        - define szItem i@Goods2
+                        - define iQty 1
+                        - inject locally MoneyCheck
+                    }
+                - inventory open d:%szInvName%
+                - determine cancelled
+            }
+        
+        # on player drags in inventory:
+        # - narrate "on player drags in inventory"
+        # - narrate "inventory <red><context.inventory>"
+        # - narrate "inventory.type <red><context.inventory.type>"
+        # - narrate "inventory.title <red><context.inventory.title>"
+        # - if <context.inventory.title> == 商店第一頁 {
+                # - inventory open d:in@shop1
+                # - determine cancelled
+            # }
+        # - if <context.inventory.title> == 商店第二頁 {
+                # - inventory open d:in@shop2
+                # - determine cancelled
+            # }
+
+    MoneyCheck:
+    - if <player.money.sub[5].is[less].then[0]> {
+            - narrate "[<aqua>商店<white>] 錢不夠啊! 你怎麼能這麼窮?!"
+        } else {
+            - narrate "[<aqua>商店<white>] 購買了物品"
+            - take money qty:%iCost%
+            - give %szItem% qty:%iQty%
+        }
+        
+"bla":
+    type: task
+    script:
+    - execute as_server "tellraw <player.name> {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},{'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
+
+
+"Goods1_shop": 
+    type: item 
+    material: STONE_SWORD 
+    display name: 長劍
+    lore:  
+    - "<Bold>超屌的劍喔! +5傷害喔!"
+    - ""
+    - "<yellow>售價: 5"
+    
+"Goods1": 
+    type: item 
+    material: STONE_SWORD 
+    display name: 長劍
+    lore:  
+    - "<Bold>超屌的劍喔! +5傷害喔!"
+    
+"Goods2_shop": 
+    type: item 
+    material: STICK 
+    display name: 就只是樹枝
+    lore:  
+    - "<Bold>超強大的樹枝哦!"
+    - ""
+    - "<yellow>售價: 5"
+
+"Goods2": 
+    type: item 
+    material: STICK 
+    display name: 就只是樹枝
+    lore:  
+    - "<Bold>超強大的樹枝哦!"
+
+"Goods3_shop": 
+    type: item 
+    material: skull:4 
+    display name: Creeper
+    lore:  
+    - "<Bold>CREEPER!"
+    - ""
+    - "<yellow>售價: 5"
+
+"Goods3": 
+    type: item 
+    material: spawn_egg:50
+    display name: Creeper
+    lore:  
+    - "<Bold>CREEPER!"
+
+"btn_prev": 
+    type: item 
+    material: lever 
+    display name: 上一頁
+    lore:  
+    - "<white>前往上一頁"
+
+"btn_next": 
+    type: item 
+    material: torch
+    display name: 下一頁
+    lore:  
+    - "<white>前往下一頁"
+
+"btn_readme": 
+    type: item 
+    material: paper
+    display name: 說明
+    lore:  
+    - "<white>按一下商品就會直接購買"
+    - ""
+    - "<red>目前只有做好購買系統, 販賣還沒做好, 身上丟進商店會被吃掉"
+
+
+"shop1":
+    type: inventory 
+    inventory: CHEST 
+    title: 商店第一頁
+    size: 9
+    slots: 
+    - "[Goods1_shop] [Goods3_shop] [] [] [] [] [btn_readme] [] [btn_next]"
+
+"shop2":
+    type: inventory 
+    inventory: CHEST 
+    title: 商店第二頁
+    size: 9
+    slots: 
+    - "[Goods2_shop] [] [] [] [] [] [btn_readme] [btn_prev] []"
+

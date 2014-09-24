@@ -1,0 +1,58 @@
+"Q005-伐木任務":
+    type: assignment
+    interact scripts: 
+    - 3 Q005-伐木開始
+    actions:
+        on assignment: 
+        - trigger name:chat toggle:ture
+        - trigger name:proximity toggle:false
+'Q005-伐木開始':
+    type: interact
+    steps:
+        '1':
+            Click trigger:
+                script:
+                - engage
+                - if <player.inventory.contains[wood].qty[10]> && <player.flag[Q005-task]> == ing {
+                        - run Q005-領取獎勵
+                     } else if <player.flag[Q005-task]> == ing {
+                        - narrate '<npc.name>：加油!還差一點!'
+                     } else {
+                        - narrate '<npc.name>：我需要10個木頭,你可以給我些嗎?(ok/no)'
+                     }
+                - disengage
+            
+            Chat trigger:
+                1:
+                    trigger: '/Regex:ok/'
+                    script:
+                    - engage
+                    - if <player.flag[Q005-task]> == ing {
+                        - narrate '<npc.name>： 你剛剛不是已經答應過了嗎?'
+                         } else {
+                        - chat '領取任務成功！'
+                        - flag Q005-task:ing
+                         }                      
+                    - disengage
+                2:
+                    trigger: '/Regex:no/'
+                    script:
+                    - engage
+                    - if <player.flag[Q005-task]> == ing {
+                        - narrate '<npc.name>： 答應過的事要做到喔!'
+                         } else {
+                        - narrate '<npc.name>： 好阿!都這樣阿!'
+                         }
+                    - disengage
+
+'Q005-領取獎勵':
+    type: task
+    script:
+    - engage
+    - narrate '<npc.name>： 謝謝你!'
+    - give 'i@273' qty:1
+    - take wood qty:10
+    - give 'i@274' qty:1
+    - give 'i@275' qty:1
+    - flag Q005-task:none
+    - disengage

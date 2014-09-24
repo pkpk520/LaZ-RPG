@@ -1,0 +1,76 @@
+"玩家傳送": 
+    type: assignment
+    interact scripts: 
+    - 0 damn
+    action: 
+        on assignment: 
+        - trigger name:chat toggle:true
+        - trigger name:click toggle:ture
+'damn':  
+    type: interact
+    steps: 
+        1:
+            Click trigger: 
+                script: 
+                    - narrate '你好,我是不白玩家專用的傳送使者'
+                    - narrate '對著我說play可以進入小白專用區'
+                    - narrate '對著我說heaven可以進入不白專用區'
+                    - narrate '請保持素質'
+            Chat trigger: 
+                1:
+                    trigger: '/Regex:play/'
+                    script:
+                        - run 'A1'
+                2:
+                    trigger: '/Regex:heaven|play2/'
+                    script:
+                        - run 'A2'
+                3:
+                    trigger: '/Regex:test/'
+                    script: 
+                        - run 'A3'
+'A1':
+    Type: task
+    Script:
+        - if <player.in_group[Member]> ||
+            <player.name> == ANTI ||
+            <player.name> == whitpillow ||
+            <player.name> == danny940111 ||
+            <player.name> == hate ||
+            <player.name> == cgl500 ||
+            <player.name> == patrick339 ||
+            <player.name> == jeff1810qw ||
+            <player.name> == patrick339 ||
+            <player.name> == Jon {
+                - teleport <player.name> l@-1398,69,-405,21,-93,play
+            }
+'A2':
+    Type: task
+    Script:
+        - if <player.in_group[Member]> ||
+            <player.name> == ANTI ||
+            <player.name> == whitpillow ||
+            <player.name> == danny940111 ||
+            <player.name> == hate ||
+            <player.name> == cgl500 ||
+            <player.name> == patrick339 ||
+            <player.name> == jeff1810qw ||
+            <player.name> == patrick339 ||
+            <player.name> == Jon {
+                - teleport <player.name> l@96,73,285,10,-82,play2
+            }
+'A3':
+    Type: task
+    Script:
+        - if <player.name> == pkpk520 {
+            - narrate '<player.location>'
+            }
+        - if <player.name> == pkpk520 {
+            - narrate '2'
+            }
+        - if <player.name> == pkpk520 {
+            - narrate '3'
+            }
+        - if <player.name> == Ray_keta {
+            - narrate '4'
+            }

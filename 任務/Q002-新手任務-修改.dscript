@@ -1,0 +1,62 @@
+"Q002-新手任務":
+    # type這個冒號後面要空格
+    type: assignment
+    interact scripts:
+    - 2 Q002-取水任務
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:false
+'Q002-取水任務':
+    type: interact
+    steps:
+        'Greeting*':
+            Proximity Trigger:
+                enter:
+                    script:
+                    - chat '歡迎來到LaZ!我是新手領航員,請多指教!'
+                exit:
+                    script:
+                    - chat '祝您遊玩愉快!'
+            Click trigger:
+                script:
+                - engage
+                - if <player.inventory.contains[water_bucket].qty[1]> && <player.flag[Q002-Progress]> == water {
+                        run 'Q002-領取獎勵'
+                    } else if <player.inventory.contains[bucket].qty[1]> && <player.flag[Q002-Progress]> == water {
+                        - narrate '<npc.name>： 還沒有把水提回來嗎?'
+                    } else if <player.inventory.contains[bucket].qty[0]> && <player.flag[Q002-Progress]> == water {
+                        if <player.flag[Q002-Again]> == true {
+                            - announce '<npc.name>： 我不是給過你第二個桶子了嗎 (怒'
+                        } else {
+                            - narrate '<npc.name>： 桶子弄丟了嗎? 我再給你一個吧, 快去快回喔'
+                            - give 'item:bucket' qty:1
+                            - flag Q002-Again:true
+                        }
+                    } else narrate '<npc.name>： 去那邊的井提<gold>一桶水<green>給我吧! <red>接受：好/ok'
+                - disengage
+               
+            Chat trigger:
+                1:
+                    trigger: '/Regex:好|ok/'
+                    script:
+                    - engage
+                    - if <player.inventory.contains[bucket].qty[1]> {
+                            - narrate '<npc.name>： 你手上已經有空桶了? 那就先用你的吧'
+                        } else {
+                            give item:bucket qty:1
+                        }
+                    - narrate '<npc.name>： 快去快回喔,就在那邊那個井~'
+                    - flag Q002-Progress:water
+                    - disengage
+
+'Q002-領取獎勵':
+    type: task
+    script:
+    - engage
+    - narrate '<npc.name>： 恭喜您完成任務'
+    - give 'item:cookie' qty:1
+    - take water_bucket qty:1
+    - give bucket qty:1
+    - flag Q002-Progress:none
+    - disengage

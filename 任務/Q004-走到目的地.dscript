@@ -1,0 +1,296 @@
+
+"Q003-多任務同時接取":
+    type: assignment
+    interact scripts:
+    - 2 Q003-多任務
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:false
+
+"Q003-羊":
+    type: assignment
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:true
+        # 要有這個 health trait 才允許觸發 on death 到處爬文才看到有這限制 快被這個弄死
+        - trait state:true health
+        - vulnerable state:true
+        on death:
+        # 檢查殺羊任務是否執行中 和殺羊的人是否為執行任務的人
+        - if <server.flag[Q003-sflag-殺羊玩家]> != null && <server.flag[Q003-sflag-殺羊玩家]> == <player.name> {
+                - narrate '[<aqua>完成任務<white>]： 殺死1隻小屁孩家的羊, 回去找<gold><npc.name><white>回報任務'
+                - flag Q003-flag-殺羊進度:待回報
+                - run task_寫入Save
+            }
+        on enter proximity:
+        - vulnerable state:true
+            
+"Q003-牛":
+    type: assignment
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:true
+        - trait state:true health
+        - vulnerable state:true
+        on death:
+        - if <server.flag[Q003-sflag-殺牛玩家]> != null && <server.flag[Q003-sflag-殺牛玩家]> == <player.name> {
+                - narrate '[<aqua>完成任務<white>]： 殺死1隻小屁孩家的牛, 回去找<gold><npc.name><white>回報任務'
+                - flag Q003-flag-殺牛進度:待回報
+                - run task_寫入Save
+            }
+        on enter proximity:
+        - vulnerable state:true
+            
+"Q003-雞":
+    type: assignment
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:true
+        - trait state:true health
+        - vulnerable state:true
+        on death:
+        - if <server.flag[Q003-sflag-殺雞玩家]> != null && <server.flag[Q003-sflag-殺雞玩家]> == <player.name> {
+                - narrate '[<aqua>完成任務<white>]： 殺死1隻小屁孩家的雞, 回去找<gold><npc.name><white>回報任務'
+                - flag Q003-flag-殺雞進度:待回報
+                - run task_寫入Save
+            }
+        on enter proximity:
+        - vulnerable state:true
+            
+'Q003-多任務':
+    type: interact
+    steps:
+        'Greeting*':
+            Click trigger:
+                script:
+                - ^engage
+                - ^if <player.flag[Q003-flag-殺羊進度]> == 已完成 && <player.flag[Q003-flag-殺牛進度]> == 已完成 && <player.flag[Q003-flag-殺雞進度]> == 已完成 {
+                        - flag Q003-flag-任務進度:已完成
+                        - run task_寫入Save
+                    }
+                - ^if <player.flag[Q003-flag-殺羊進度]> == 待回報 || <player.flag[Q003-flag-殺牛進度]> == 待回報 || <player.flag[Q003-flag-殺雞進度]> == 待回報 {
+                        - if <player.flag[Q003-flag-殺羊進度]> == 待回報 {
+                                - narrate '<blue><npc.name><white>： 謝謝你幫忙殺了羊, 這是說好的獎勵'
+                                - run Q003-領取獎勵
+                                - flag server Q003-sflag-殺羊玩家:!
+                                - flag Q003-flag-殺羊進度:已完成
+                                - run task_寫入Save
+                            }
+                        - if <player.flag[Q003-flag-殺牛進度]> == 待回報 {
+                                - narrate '<blue><npc.name><white>： 謝謝你幫忙殺了牛, 這是說好的獎勵'
+                                - run Q003-領取獎勵
+                                - flag server Q003-sflag-殺牛玩家:!
+                                - flag Q003-flag-殺牛進度:已完成
+                                - run task_寫入Save
+                            }
+                        - if <player.flag[Q003-flag-殺雞進度]> == 待回報 {
+                                - narrate '<blue><npc.name><white>： 謝謝你幫忙殺了雞, 這是說好的獎勵'
+                                - run Q003-領取獎勵
+                                - flag server Q003-sflag-殺雞玩家:!
+                                - flag Q003-flag-殺雞進度:已完成
+                                - run task_寫入Save
+                            }
+                    } else if <player.flag[Q003-flag-任務進度]> == 已完成 {
+                        - narrate '<blue><npc.name><white>： 上次真是謝謝你, 動物少了一些之後安靜多了'
+                        - narrate '*--------------------'
+                        - narrate '*- <gray>殺死1隻羊(已完成)'
+                        - narrate '*- <gray>殺死1隻牛(已完成)'
+                        - narrate '*- <gray>殺死1隻雞(已完成)'
+                    } else {
+                        - narrate '<blue><npc.name><white>： 隔壁小屁孩養的動物太多了很吵啊... 你可不可以想點辦法?'
+                        - narrate '*--------------------'
+                        - if <server.flag[Q003-sflag-殺羊玩家]> != null && !<p@<server.flag[Q003-sflag-殺羊玩家]>.is_online> {
+                                - flag <<server.flag[Q003-sflag-殺羊玩家]>.flag[Q003-flag-殺羊進度]>:!
+                                - flag server Q003-sflag-殺羊玩家:!
+                                - run task_寫入Save
+                            }
+                        - if <server.flag[Q003-sflag-殺牛玩家]> != null && !<p@<server.flag[Q003-sflag-殺牛玩家]>.is_online> {
+                                - flag <<server.flag[Q003-sflag-殺牛玩家]>.flag[Q003-flag-殺牛進度]>:!
+                                - flag server Q003-sflag-殺牛玩家:!
+                                - run task_寫入Save
+                            }
+                        - if <server.flag[Q003-sflag-殺雞玩家]> != null && !<p@<server.flag[Q003-sflag-殺雞玩家]>.is_online> {
+                                - flag <<server.flag[Q003-sflag-殺雞玩家]>.flag[Q003-flag-殺雞進度]>:!
+                                - flag server Q003-sflag-殺雞玩家:!
+                                - run task_寫入Save
+                            }
+                        - if <player.flag[Q003-flag-殺羊進度]> == 已完成 {
+                                - narrate '*- <gray>殺死1隻羊(已完成)'
+                            } else if <server.flag[Q003-sflag-殺羊玩家]> != null && <server.flag[Q003-sflag-殺羊玩家]> != <player.name> {
+                                - narrate '*- <gray>殺死1隻羊(任務由其他線上玩家進行中： <server.flag[Q003-sflag-殺羊玩家]>)'
+                            } else if <player.flag[Q003-flag-殺羊進度]> == 進行中 {
+                                - narrate '*- <dark_green>殺死1隻羊(進行中) <red>(放棄羊/AbortSheep)'
+                            } else {
+                                - narrate '*- 殺死1隻羊<dark_green>(可接取) <red>(殺羊/KillSheep)'
+                            }
+                        - if <player.flag[Q003-flag-殺牛進度]> == 已完成 {
+                                - narrate '*- <gray>殺死1隻牛(已完成)'
+                            } else if <server.flag[Q003-sflag-殺牛玩家]> != null && <server.flag[Q003-sflag-殺牛玩家]> != <player.name> {
+                                - narrate '*- <gray>殺死1隻羊(任務由其他線上玩家進行中： <server.flag[Q003-sflag-殺牛玩家]>)'
+                            } else if <player.flag[Q003-flag-殺牛進度]> == 進行中 {
+                                - narrate '*- <dark_green>殺死1隻牛(進行中) <red>(放棄牛/AbortCow)'
+                            } else {
+                                - narrate '*- 殺死1隻牛<dark_green>(可接取) <red>(殺牛/KillCow)'
+                            }
+                        - if <player.flag[Q003-flag-殺雞進度]> == 已完成 {
+                                - narrate '*- <gray>殺死1隻雞(已完成)'
+                            } else if <server.flag[Q003-sflag-殺雞玩家]> != null && <server.flag[Q003-sflag-殺雞玩家]> != <player.name> {
+                                - narrate '*- <gray>殺死1隻羊(任務由其他線上玩家進行中： <server.flag[Q003-sflag-殺雞玩家]>)'
+                            } else if <player.flag[Q003-flag-殺雞進度]> == 進行中 {
+                                - narrate '*- <dark_green>殺死1隻雞(進行中) <red>(放棄雞/AbortChicken)'
+                            } else {
+                                - narrate '*- 殺死1隻雞<dark_green>(可接取) <red>(殺雞/KillChicken)'
+                            }
+                        - narrate '*- 任務獎勵： 每個任務可獲得<gold>1個餅乾'
+                    }
+                - ^disengage
+               
+            Chat trigger:
+                KillSheep:
+                    trigger: '我幫你/Regex:殺羊|KillSheep|killsheep/'
+                    script:
+                    - ^engage
+                    - if <player.flag[Q003-flag-殺羊進度]> == 進行中 {
+                            - narrate '<blue><npc.name><white>： 你剛剛不是已經說要幫忙了嗎? 我在這等你'
+                        } else if <player.flag[Q003-flag-殺羊進度]> == 已完成 {
+                            - narrate '<blue><npc.name><white>： 羊已經殺夠了, 再殺可能會被懷疑的'
+                        } else {
+                            - narrate '<blue><npc.name><white>： 太好了, 我等你的好消息!'
+                            - narrate '[<aqua>接受任務<white>]： 殺死1隻小屁孩家的羊'
+                            - narrate '<blue><npc.name><white>： 如果被抓到了別說是我指使的!'
+                            - flag server Q003-sflag-殺羊玩家:<player.name>
+                            - flag Q003-flag-殺羊進度:進行中
+                            - run task_寫入Save
+                        }
+                    - ^disengage
+                KillCow:
+                    trigger: '我幫你/Regex:殺牛|KillCow|killcow/'
+                    script:
+                    - ^engage
+                    - if <player.flag[Q003-flag-殺牛進度]> == 進行中 {
+                            - narrate '<blue><npc.name><white>： 你剛剛不是已經說要幫忙了嗎? 我在這等你'
+                        } else if <player.flag[Q003-flag-殺牛進度]> == 已完成 {
+                            - narrate '<blue><npc.name><white>： 牛已經殺夠了, 再殺可能會被懷疑的'
+                        } else {
+                            - narrate '<blue><npc.name><white>： 太好了, 我等你的好消息!'
+                            - narrate '[<aqua>接受任務<white>]： 殺死1隻小屁孩家的牛'
+                            - narrate '<blue><npc.name><white>： 如果被抓到了別說是我指使的!'
+                            - flag server Q003-sflag-殺牛玩家:<player.name>
+                            - flag Q003-flag-殺牛進度:進行中
+                            - run task_寫入Save
+                        }
+                    - ^disengage
+                KillChicken:
+                    trigger: '我幫你/Regex:殺雞|KillChicken|killchicken/'
+                    script:
+                    - ^engage
+                    - if <player.flag[Q003-flag-殺雞進度]> == 進行中 {
+                            - narrate '<blue><npc.name><white>： 你剛剛不是已經說要幫忙了嗎? 我在這等你'
+                        } else if <player.flag[Q003-flag-殺雞進度]> == 已完成 {
+                            - narrate '<blue><npc.name><white>： 雞已經殺夠了, 再殺可能會被懷疑的'
+                        } else {
+                            - narrate '<blue><npc.name><white>： 太好了, 我等你的好消息!'
+                            - narrate '[<aqua>接受任務<white>]： 殺死1隻小屁孩家的雞'
+                            - narrate '<blue><npc.name><white>： 如果被抓到了別說是我指使的!'
+                            - flag server Q003-sflag-殺雞玩家:<player.name>
+                            - flag Q003-flag-殺雞進度:進行中
+                            - run task_寫入Save
+                        }
+                    - ^disengage
+                AbortSheep:
+                    trigger: '我想/Regex:放棄羊|AbortSheep/任務'
+                    script:
+                    - ^engage
+                    - if <server.flag[Q003-sflag-殺羊玩家]> == <player.name> {
+                            - narrate '<blue><npc.name><white>： 這樣啊... 太可惜了, 如果你改變心意的話再來找我吧'
+                            - narrate '[<aqua>放棄任務<white>]： 殺死1隻小屁孩家的羊'
+                            - flag server Q003-sflag-殺羊玩家:!
+                            - flag Q003-flag-殺羊進度:!
+                            - run task_寫入Save
+                        } else {
+                            - narrate '<blue><npc.name><white>： 嗯? 你之前有答應我幫忙殺羊嗎?'
+                        }
+                    - ^disengage
+                AbortCow:
+                    trigger: '我想/Regex:放棄牛|AbortCow/任務'
+                    script:
+                    - ^engage
+                    - if <server.flag[Q003-sflag-殺牛玩家]> == <player.name> {
+                            - narrate '<blue><npc.name><white>： 這樣啊... 太可惜了, 如果你改變心意的話再來找我吧'
+                            - narrate '[<aqua>放棄任務<white>]： 殺死1隻小屁孩家的牛'
+                            - flag server Q003-sflag-殺牛玩家:!
+                            - flag Q003-flag-殺牛進度:!
+                            - run task_寫入Save
+                        } else {
+                            - narrate '<blue><npc.name><white>： 嗯? 你之前有答應我幫忙殺牛嗎?'
+                        }
+                    - ^disengage
+                AbortChicken:
+                    trigger: '我想/Regex:放棄雞|AbortChicken/任務'
+                    script:
+                    - ^engage
+                    - if <server.flag[Q003-sflag-殺雞玩家]> == <player.name> {
+                            - narrate '<blue><npc.name><white>： 這樣啊... 太可惜了, 如果你改變心意的話再來找我吧'
+                            - narrate '[<aqua>放棄任務<white>]： 殺死1隻小屁孩家的雞'
+                            - flag server Q003-sflag-殺雞玩家:!
+                            - flag Q003-flag-殺雞進度:!
+                            - run task_寫入Save
+                        } else {
+                            - narrate '<blue><npc.name><white>： 嗯? 你之前有答應我幫忙殺雞嗎?'
+                        }
+                    - ^disengage
+                ResetProgress:
+                    trigger: '/regex:重置|Reset|reset/剛剛說的人的任務'
+                    script:
+                    - ^engage
+                    - if <player.group[Admins]> {
+                            - ^define PlayerToReset <<player>.chat_history[2]>
+                            - ^if <p@%PlayerToReset%.has_played_before> {
+                                    - ^if <server.flag[Q003-sflag-殺羊玩家]> == %PlayerToReset% {
+                                            - flag p@%PlayerToReset% Q003-sflag-殺羊玩家:!
+                                            - flag Q003-flag-reset:++
+                                        }
+                                    - ^if <server.flag[Q003-sflag-殺牛玩家]> == %PlayerToReset% {
+                                            - flag p@%PlayerToReset% Q003-sflag-殺牛玩家:!
+                                            - flag Q003-flag-reset:++
+                                        }
+                                    - ^if <server.flag[Q003-sflag-殺雞玩家]> == %PlayerToReset% {
+                                            - flag p@%PlayerToReset% Q003-sflag-殺雞玩家:!
+                                            - flag Q003-flag-reset:++
+                                        }
+                                    - ^if <p@%PlayerToReset%.flag[Q003-flag-殺羊進度]> != null {
+                                            - flag p@%PlayerToReset% Q003-flag-殺羊進度:!
+                                            - flag Q003-flag-reset:++
+                                        }
+                                    - ^if <p@%PlayerToReset%.flag[Q003-flag-殺牛進度]> != null {
+                                            - flag p@%PlayerToReset% %PlayerToReset% Q003-flag-殺牛進度:!
+                                            - flag Q003-flag-reset:++
+                                        }
+                                    - ^if <p@%PlayerToReset%.flag[Q003-flag-殺雞進度]> != null {
+                                            - flag p@%PlayerToReset% Q003-flag-殺雞進度:!
+                                            - flag Q003-flag-reset:++
+                                        }
+                                    - ^if <player.flag[Q003-flag-reset]> == null {
+                                            - ^narrate '<blue><npc.name><white>： %PlayerToReset% 在我這邊沒有任何任務進度'
+                                        } else {
+                                            - ^narrate '<blue><npc.name><white>： 已重置 %PlayerToReset% 在我這的任務'
+                                        }
+                                    - ^flag Q003-flag-reset:!
+                                    - ^run task_寫入Save
+                                } else {
+                                    - narrate '<blue><npc.name><white>： %PlayerToReset% 不存在'
+                                }
+                        } else {
+                            - narrate '<blue><npc.name><white>： 你不是管理員, 你沒有權利這樣做!'
+                        }
+                    - ^disengage
+                    
+'Q003-領取獎勵':
+    type: task
+    script:
+    - give 'item:cookie' qty:1
+    - narrate '[<aqua>獲得任務獎勵<white>]： <gold>1個餅乾'

@@ -1,0 +1,27 @@
+
+# 純聊天腳本範例
+
+"C001-牛講話":
+    type: assignment
+    interact scripts:
+    - 0 C001-牛正在講話
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+C001-牛正在講話:
+    type: interact
+    steps:
+        1:
+            click trigger:
+                script:
+                # 隨機會從後面幾列的腳本中隨機抓一段執行, 隨機範圍內的在隨機後不會重複執行
+                # 所以底下會執行的有　哞　隨機6行之一　哞哞
+                - chat '哞!'
+                - random 6
+                - chat '我才不是牛!'
+                - chat '不要餵我吃草!'
+                - chat '聽說這裡的人對牛很和善'
+                - chat '嗯? 你有事嗎?'
+                - chat '我沒有奶 請不要擠!'
+                - chat '其實我不好吃'
+                - chat '哞哞!'

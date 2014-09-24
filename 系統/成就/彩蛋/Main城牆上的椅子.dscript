@@ -1,0 +1,109 @@
+
+"achiv_Main城牆上的椅子":
+    type: world
+    events:
+        on entity enters vehicle:
+        - if <player.inventory.contains[i@achiv_looker]> {
+                - queue clear
+                - announce "停住"
+            }
+        
+        - if <context.vehicle.location> == l@-1313.5,101.0,1152.5,Main {
+                - announce "enter"
+                
+            }
+        - if <server.flag[flag-easter-城牆上的椅子count]> > 40 && <server.flag[flag-easter-城牆上的椅子count]> != null {
+                - flag server flag-easter-城牆上的椅子count:!
+                - flag server flag-easter-城牆上的椅子count:++
+                - announce "0"
+                - announce "<green>normal <server.flag[flag-easter-城牆上的椅子test]>"
+                - run achiv_TimeCount id:easter_chair
+            } else if <server.flag[flag-easter-城牆上的椅子count]> == null && <context.vehicle.location> == l@-1313.5,101.0,1152.5,Main {
+                
+                - if !<server.flag[flag-easter-城牆上的椅子continue]> || <server.flag[flag-easter-城牆上的椅子continue]> == null {
+                    - narrate "<gray>我眺望著遠方... 太神辣!"
+                    
+                    - flag server flag-easter-城牆上的椅子user:<player.name>
+                    - flag server flag-easter-城牆上的椅子continue:true
+                    - flag server flag-easter-城牆上的椅子sitting:true
+                    - flag server flag-easter-城牆上的椅子count:!
+                    - flag server flag-easter-城牆上的椅子count:++
+                    - flag server flag-easter-城牆上的椅子test:++
+                    - execute as_server "denizen save"
+                    - run achiv_TimeCount id:easter_chair
+                   }
+            }       
+        on entity exits vehicle:
+        
+            
+        - if <server.flag[flag-easter-城牆上的椅子count]> > 40 && <server.flag[flag-easter-城牆上的椅子count]> != null {
+                - flag server flag-easter-城牆上的椅子test:+:40
+            } else if <context.vehicle.location> == l@-1313.5,101.0,1152.5,Main {
+                - announce "exit"
+                - flag server flag-easter-城牆上的椅子continue:!
+                - flag server flag-easter-城牆上的椅子test:0
+                - flag server flag-easter-城牆上的椅子user:!
+                - flag server flag-easter-城牆上的椅子sitting:false
+                - flag server flag-easter-城牆上的椅子count:!
+                - execute as_server "denizen save"
+            }
+"achiv_TimeCount":
+    type: task
+    script:
+    - if <server.flag[flag-easter-城牆上的椅子user].as_player.is_online> && <server.flag[flag-easter-城牆上的椅子sitting]> {
+            - wait 5
+            - flag server flag-easter-城牆上的椅子count:+:5
+            - execute as_server "denizen save"
+            - announce "<green>normal <server.flag[flag-easter-城牆上的椅子count]>"
+            - if <server.flag[flag-easter-城牆上的椅子test]> > 80 {
+                    - give i@achiv_looker qty:1
+                    - flag server flag-easter-城牆上的椅子sitting:false
+                    - execute as_server "denizen save"
+                    - announce "done"
+                    
+                    - queue clear
+                }
+            - inject s@achiv_TimeCount
+        } else {
+            - flag server flag-easter-城牆上的椅子user:!
+            - flag server flag-easter-城牆上的椅子sitting:false
+            - flag server flag-easter-城牆上的椅子count:!
+            - execute as_server "denizen save"
+            - announce "stop"
+            - run achiv_Continue delay:1
+            - queue clear
+        }
+                    
+#"achiv_test":
+   # type: task
+    #script:
+   # - if <server.flag[flag-easter-城牆上的椅子user].as_player.is_online> {
+           # - wait 1
+           # - flag server flag-easter-城牆上的椅子test:++
+           # - execute as_server "denizen save"
+           # - announce "<gold>test <server.flag[flag-easter-城牆上的椅子test]>"
+           # - inject s@achiv_test
+        #} else {
+           # - flag server flag-easter-城牆上的椅子test:!
+           # - execute as_server "denizen save"
+           # - announce "test stop"
+            #- queue clear
+        #}
+        
+"achiv_Continue":
+    type: task
+    script:
+    - announce "con"
+    - flag server flag-easter-城牆上的椅子continue:false
+    
+achiv_looker:
+    type: book
+    title: <aqua>眺望者
+    author: <player.name>@成就道具
+    text:
+    - "你不斷的眺望著遠方
+        <p>直到眼睛脫窗"
+    - "每周成就獎勵：$100$元"
+    
+    
+    

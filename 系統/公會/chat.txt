@@ -1,0 +1,30 @@
+
+## 各種BUG 放置Play中
+"Guild-公會頻道":
+    type: world
+    events:
+        on player chats:
+        # 判斷是不是在對NPC講話 否也會輸出聊天
+        # - narrate "<player.target[npc].within[2]>"
+        - if <player.target[npc].within[2]> == null || !<<player.target[npc].within[2]>.has_script> {
+                - define WorldName <player.world.split[@].get[2]>
+                - if <player.world.split[@].get[2]> == Sanctuary define WorldName 聖域
+                    else if <player.world.split[@].get[2]> == Main define WorldName 中土世界
+                    else if <player.world.split[@].get[2]> == pkpk define WorldName
+                    
+                - define GroupName P-
+                - if <player.in_group[SUAdmins]> || <player.in_group[Admins]> define GroupName <dark_red>管管<white>-
+                    else if <player.in_group[Moderator]> define GroupName <dark_aqua>M<white>-
+                    else if <player.in_group[VIP]> define GroupName <dark_purple>V<white>-
+                    else if <player.in_group[Member]> define GroupName <dark_green>B<white>-
+                    else if <player.in_group[Default]> define GroupName P-
+                    
+                - define PlayerName <yellow><player.name><white>
+                - if <player.is_op> define PlayerName <red><player.name><white>
+                
+                - announce "[%WorldName%]<&lt>%GroupName%%PlayerName%<&gt><&co> <context.message>"
+                - execute as_server "ts chat [%WorldName%]<&lt>%GroupName%%PlayerName%<&gt><&co> <context.message>"
+                
+                - determine cancelled
+            }
+            

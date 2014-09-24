@@ -1,0 +1,108 @@
+
+# 井號是標為註解, 請不要砍掉這範例的註解, 自己另外寫一份腳本玩看看, 比較容易進入狀況
+
+# 這個NPC在巴比倫大廳中間那裏 叫"名字隱藏測試", 可以去跟他跑一次任務了解構造
+# 但是請不要動他的設定, 自己弄一隻來玩看看
+
+## 最前面這個 Q001 開頭的這段是命名, 很重要, 絕對不能重複, 就像寫一般程式一樣重複就會出錯(也會和其他腳本重複)
+## 所以為了之後方便管理, 請在所有的命名加上 Q數字-  代表同一個腳本 任務系列用Q (Quest) 純談話腳本用C (Chat)
+## 另外檔案名可以中文, 他主要是給自己看的不是給系統看的, 裡面的才是給系統看的, 所以不見得要跟裡面的命名一樣
+
+# 設置任務給NPC步驟:
+# /npc select　　先選擇NPC
+# /npc assignment --set "任務名"　　例如: /npc assignment --set Q001-惱人的殭屍
+# 就完成了設置
+
+"Q001-惱人的殭屍":
+    # 每個NPC腳本都會需要 type: assignment 這整段指派(assignment)做開頭
+    type: assignment
+    interact scripts:
+    #-　優先執行順序　命名
+    - 2 Q001-殺一些惱人的殭屍
+    actions:
+        # 命名後自動觸發這個 啟動NPC對話功能
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:false
+        
+        on enter proximity:
+        #- chat '進入範圍'
+
+        on exit proximity:
+        #- chat '離開範圍'
+        
+'Q001-殺一些惱人的殭屍':
+    # 標示這段為"互動"類型的腳本
+    type: interact
+    steps:
+        # 段落命名 目前這個腳本裡面只有一個段落, 在有多個段落的腳本裡面可以用 zap 'step:段落' 讓他跳到其他段去, 可能讓一個NPC有多個任務之類的
+        'Greetings*':
+            # 右鍵點擊觸發 
+            click trigger:
+                script:
+                # 第一個 if 檢查是否已完成任務 (進度為 DoneZombies), 如果已完成則跳到 Q001-領取獎勵 腳本拿取獎勵
+                # 如過未完成, 則 else 第二個 if 檢查任務是否進行中 (進度為 KillZombies)
+                # 如果進行中則NPC問完成沒或是你想放棄任務, else 如果非進行中則開頭對話 問要不要接任務
+                # 這邊的 接受和放棄 不是語法, 只有改個顏色讓玩家知道要輸入什麼來觸發
+                # 考慮到有的人沒裝中文輸入, 所以我留個英文的觸發關鍵字
+                - if <player.flag[Q001-Progress]> == DoneZombies run Q001-領取獎勵
+                  else if <player.flag[Q001-Progress]> == KillZombies 
+                  chat '你幫我殺掉<gold>1隻殭屍<green>了嗎? 還是你想放棄任務? <gold>放棄：放棄/abort'
+                  else
+                  chat '欸欸, 可以幫我幹個<gold>1隻殭屍<green>嗎? 我可以給你<gold>1塊餅乾<green>當獎勵! <red>接受：好/ok'
+            
+            # 談話觸發 - 在設定的距離內看著NPC講話會自動變成對NPC講 預設三格
+            chat trigger:
+                1:
+                    # 觸發條件 若句子裡抓到 好 或 ok 則觸發以下script
+                    trigger: '/Regex:好|ok/, 我會幫你!'
+                    script:
+                    - chat '太神辣! 那我就等你的好消息吧'
+                    # 我用 flag 來標記任務進度, 這邊設定成zombie代表任務進行中
+                    - flag Q001-Progress:Zombies
+                    # 跑 Q001-任務開始 腳本
+                    - run 'Q001-任務開始'
+                2:
+                    # 若句子裡抓到 放棄 或 abort 則觸發以下script
+                    trigger: '我想/Regex:放棄|abort/任務'
+                    script:
+                    - chat '這樣啊... 太可惜了, 如果你改變心意的話再來找我吧.'
+                    # 放棄任務 進度標為none
+                    - flag Q001-Progress:none
+                    
+'Q001-任務開始':
+    # 標示這段為"純執行"類型的腳本
+    Type: Task
+    Script:
+    # 設定進度為 KillZombies
+    - flag Q001-Progress:KillZombies
+    # 這個是任務腳本的關鍵, 他會持續追蹤玩家的行為
+    # type 設定擊殺的目標類型 (player, entity, npc)
+    # name 目標名稱(怪物名, 玩家名  NPC則用 NPCID: 而不是name)
+    # qty 數量 (Quantity的縮寫)
+    # ID 給 listener 的命名, 以利之後用指令或腳本命令來強迫完成或放棄這個 listener
+    - listen kill type:entity name:ZOMBIE script:Q001-提醒拿獎勵 qty:1 ID:Q001-惱人的殭屍
+
+'Q001-提醒拿獎勵':
+    Type: Task
+    Script:
+    # narrate 會直接傳給玩家一段文字, 而不是交談的格式, 所以我這邊加個開頭讓收到訊息的人知道是來自哪邊的訊息
+    # 為何用 narrate 而不是 chat? 因為收到這段訊息的時候該NPC不見得在你身邊, 為了讓他真實一點所以用純文字
+    - narrate "[<green>任務提示<white>] 你完成了殺殭屍任務! 快回去找<gold><npc.name><white>回報任務吧!"
+    - flag Q001-Progress:DoneZombies
+
+'Q001-領取獎勵':
+    type: task
+    script:
+    - chat '你幫了大忙啊<player.name>! 來, 這是說好的獎勵.'
+    # <npc.name> 會自動抓NPC的名字進來, 這邊會照以下格式輸出, 提示有NPC給你東西
+    # 名字隱藏測試 給了你一塊餅乾.
+    - narrate '<npc.name> 給了你一塊餅乾.'
+    # 給玩家東西 qty 一樣是數量
+    - give 'item:cookie' qty:1
+    # 任務進度設為原本的狀態 讓前面的 if 檢查知道你任務結束了
+    - flag Q001-Progress:none
+    - wait 1
+    - chat '附近還有很殭屍, 如果你願意的話改天可以再幫我殺一些.'
+    
+    

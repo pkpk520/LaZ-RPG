@@ -1,0 +1,7 @@
+
+achiv_ADungeon:
+    type: book
+    title: A副本的成就道具
+    author: <player.name>@成就道具
+    text:
+    - 每周可以領取100元

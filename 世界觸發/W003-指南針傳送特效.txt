@@ -1,0 +1,9 @@
+W003-指南針傳送特效:
+    type: world
+    events:
+        on player animates ARM_SWING:
+        # 如果是Admins 而且手上的是指南針
+        - if <player.group[Admins]> && <<player>.item_in_hand> == i@compass {
+                - playeffect <player.location> EXTINGUISH qty:1
+                - playeffect <player.location> CLOUD qty:10
+            }

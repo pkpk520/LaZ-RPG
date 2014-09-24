@@ -1,0 +1,25 @@
+
+"achiv_item": 
+    type: item
+    material: 403
+    display name: "<aqua>成就道具 - 眺望者"
+    lore:
+    - "<gold>每周成就獎勵：100 金幣"
+    - "<green>綁定：<player.name>"
+    - "<gray><italic>對地板點擊右鍵可閱讀內容"
+    
+"achiv_item_event":
+    type: world
+    events:
+        on player right clicks block with i@achiv_item:
+        - narrate "<player.item_in_hand.display>：<gray>你不斷的眺望著遠方, 直到眼睛脫窗..."
+        - run i@achiv_item
+        
+"li@i@ACHIV_ITEM":
+    type: task
+    script:
+    - narrate "i@achiv_item 成功觸發"
+        
+        
+        
+        

@@ -1,0 +1,253 @@
+
+"NPC-成就領航員":
+    type: assignment
+    interact scripts:
+    - 2 NPC-成就領航員act
+    actions:
+        on assignment:
+        - trigger name:click toggle:true
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:true
+        
+        on enter proximity:
+        - yaml load:data/AchivChest.yml id:AchivChest
+        
+"NPC-成就領航員act":
+    type: interact
+    steps:
+        'Greeting*':
+            click trigger:
+                script:
+                - narrate ""
+                - ^narrate "<blue><npc.name><white>： 如果你手上有成就道具記得放進收藏箱, 每周刷新計算的時候才拿得到獎勵囉!"
+                - ^narrate "*---------------服務項目---------------"
+                - ^if <yaml[AchivChest].contains[achivchest.registed.<player.name>]> && <yaml[AchivChest].read[achivchest.registed.<player.name>]> != '' {
+                        - ^narrate "*- 1. <gray>申請成就收藏箱<white>
+                                 <n>*- 2. 我的收藏箱(<gold><yaml[AchivChest].read[achivchest.registed.<player.name>]><white>)在哪個位置?
+                                 <n>*- 3. 我要領取獎勵"
+                    } else {
+                        - ^narrate "<red>> 你必須先申請成就收藏箱才能使用後續成就服務<white>
+                                 <n>*- 1. <green>申請成就收藏箱<white>
+                                 <n>*- 2. <gray>我的收藏箱在哪個位置?<white>
+                                 <n>*- 3. <gray>我要領取獎勵"
+                    }
+                - ^narrate "*- 4. 下一次領取獎勵的時間?
+                         <n>*- 5. 成就有什麼好處?
+                         <n>*- 6. 我該怎麼獲得成就道具?
+                         <n>*- 7. 成就獎勵是如何計算的?
+                         <n>*- 8. 我可以申請第二個成就箱嗎?
+                         <n>*- 9. 為什麼系統說要換個角度開箱子?"
+                - ^if <player.in_group[Admins]> {
+                        - ^narrate "*--------管理員測試用--------
+                                 <n>*- A. <light_purple>移除我的箱子所有權<white>
+                                 <n>*- B. <light_purple>移除全部箱子所有權"
+                    }
+                    
+            chat trigger:
+                申請:
+                    trigger: "我想要申請成就收藏箱/Regex:(?=1|申請)/"
+                    script: 
+                    - ^engage
+                    - ^wait 1
+                    - ^define PlayerName <player.name>
+                    - ^if <yaml[AchivChest].contains[achivchest.registed.<player.name>]> && <yaml[AchivChest].read[achivchest.registed.<player.name>]> != '' {
+                            - ^narrate "<blue><npc.name><white>： 你不是已經申請過成就收藏箱了嗎?"
+                        } else {
+                            - ^inject achiv_成就箱
+                        }
+                    - ^disengage
+                    
+                我的箱子:
+                    trigger: "我的收藏箱在哪個位置?/Regex:(?=2|我的|在哪|哪個|哪一個|位置)/"
+                    script: 
+                    - ^engage
+                    - ^wait 1
+                    - ^define PlayerName <player.name>
+                    - ^if <yaml[AchivChest].contains[achivchest.registed.<player.name>]> && <yaml[AchivChest].read[achivchest.registed.<player.name>]> != '' {
+                            - ^narrate "<blue><npc.name><white>： 你的箱子是 <gold><yaml[AchivChest].read[achivchest.registed.<player.name>]>"
+                            - ^inject achiv_成就箱 p:WhereIsChest
+                        } else {
+                            - ^narrate "<blue><npc.name><white>： 你還沒擁有自己的收藏箱呢, 先向我申請吧"
+                        }
+                    - ^disengage
+                    
+                領取:
+                    trigger: "我要領取獎勵/Regex:(?=3|領取|領獎)/"
+                    script: 
+                    - ^engage
+                    - wait 1
+                    - ^if <yaml[AchivChest].contains[achivchest.registed.<player.name>]> && <yaml[AchivChest].read[achivchest.registed.<player.name>]> != '' {
+                            - ^define ChestName <yaml[AchivChest].read[achivchest.registed.<player.name>]>
+                            - ^define ChestLocList <yaml[AchivChest].read[achivchest.chests.%ChestName%.location]>
+                            - ^narrate "<green>裡面有 <%ChestLocList%.get[1].as_location.inventory.stacks> 個東西"
+                            - ^narrate "test <%ChestLocList%.get[1].as_location.inventory.list_contents>"
+                            - ^narrate "test2 <%ChestLocList%.get[1].as_location.inventory.list_contents.get[<%ChestLocList%.get[1].as_location.inventory.list_contents.find[author|<player.name>@成就道具]>]>"
+                            - ^narrate "<green>抓到 "
+                            - ^narrate "<%ChestLocList%.get[1].as_location.inventory.slot[0]>"
+                            - ^run <%ChestLocList%.get[1].as_location.inventory.list_contents>
+                        } else {
+                            - ^narrate "<blue><npc.name><white>： 你還沒擁有自己的收藏箱呢, 先向我申請吧"
+                        }
+                    - ^disengage
+                    
+                下次時間:
+                    trigger: "領取獎勵的刷新時間?/Regex:(?=4|下次|下一次|領取|時間)/"
+                    script: 
+                    - ^engage
+                    - wait 1
+                    - ^narrate "<blue><npc.name><white>： 每個禮拜<gold>星期一的 00:00<white>會刷新領取, 但是錯過沒有來領的話不會累計, 記得每周要來跟我領喔!"
+                    - ^disengage
+                    
+                什麼好處:
+                    trigger: "成就有什麼好處?/Regex:(?=5|有什|有甚|什麼|甚麼|好處)/"
+                    script: 
+                    - ^engage
+                    - wait 1
+                    - ^narrate "<blue><npc.name><white>： 當你獲得成就道具並放進自己的成就箱後, 每周可以來向我領取一次獎勵, 成就道具獎勵有可能是金錢, 有可能是物品, 依照成就道具上面寫的為主"
+                    - ^disengage
+                    
+                怎麼獲得:
+                    trigger: "我該怎麼獲得成就道具?/Regex:(?=6|怎麼|獲得)/"
+                    script: 
+                    - ^engage
+                    - wait 1
+                    - ^narrate "<blue><npc.name><white>： 成就道具可以由<gold>完成任務、副本<white>或是<gold>發現彩蛋<white>來獲取, 並且成就道具是<gold>綁定<white>的, 給予其他玩家他們並不會得到獎勵"
+                    - wait 3
+                    - ^narrate "> <gold>任務成就道具<white>： 依照不同任務獎勵獲取, 部分任務<gold>沒有成就道具<white>, 部分是依照<gold>任務完成次數<white>或<gold>機率<white>給予"
+                    - wait 3
+                    - ^narrate "> <gold>副本成就道具<white>： 完成副本都會給予成就道具, 有的是給予<gold>固定的成就道具<white>, 有的是依照你在任務中的選擇影響<gold>劇情走向<white>而得到<gold>不同的成就道具"
+                    - wait 3
+                    - ^narrate "> <gold>彩蛋成就道具<white>： 發現彩蛋並點他會獲得成就道具, 但是同個彩蛋<red>只能夠獲得一次<white>, 所以請記得<red>千萬不要弄丟"
+                    - ^disengage
+                    
+                如何計算:
+                    trigger: "成就獎勵是怎麼計算的?/Regex:(?=7|如何|計算)/"
+                    script: 
+                    - ^engage
+                    - wait 1
+                    - ^narrate "<blue><npc.name><white>： 每個成就道具上面都有寫每周能獲得的獎勵, 多個相同的成就道具是採<gold>倍數減半並小數四捨五入<white>來計算.<n>
+                            公式為<gold> 領取 = 獎勵 * (1 + 0.5^n-1 + 0.5^n-2 ...)"
+                    - wait 5
+                    - ^narrate "<blue><npc.name><white>： <gold>金錢獎勵<white>的部分, 例如你在獎勵箱放<gold>一個<white>A成就道具, 寫著<gold>每周可以領取1000元<white><n>
+                            -- <gold>1A<white> = 1000 * (1 + 0.5^0) = <gold>1000<white><n>
+                            -- <gold>2A<white> = 1000 * (1 + 0.5^1) = <gold>1500<white><n>
+                            -- <gold>3A<white> = 1000 * (1 + 0.5^2 + 0.5^1) = <gold>1750<white>   以此類推"
+                    - wait 5
+                    - ^narrate "<blue><npc.name><white>： <gold>物品獎勵<white>與上面相同, 例如獎勵寫<gold>每周可以領兩個鑽石<white><n>
+                            -- <gold>1A<white> = 2 * (1 + 0.5^0) = <gold>2<white><n>
+                            -- <gold>2A<white> = 2 * (1 + 0.5^1) = 2 * 1.5 = <gold>3<white><n>
+                            -- <gold>3A<white> = 2 * (1 + 0.5^2 + 0.5^1) = 2 * 1.75 = 2.75 = <gold>3<white>   以此類推"
+                    - wait 5
+                    - narrate "<blue><npc.name><white>： 如果還有不懂的部分可以詢問管理員喔!"
+                    - ^disengage
+
+                第二個:
+                    trigger: "我可以申請第二個成就箱嗎?/Regex:(?=8|第二|兩個|二個)/"
+                    script:
+                    - ^engage
+                    - wait 1
+                    - ^narrate "<blue><npc.name><white>： 目前每個人只能擁有一個成就箱, 如果你的箱子滿了, 考慮把比較不想要的獎勵拿掉吧"
+                    - ^disengage
+
+                角度:
+                    trigger: "為什麼系統說要換個角度開箱子?/Regex:(?=9|角度|換|系統)/"
+                    script:
+                    - ^engage
+                    - wait 1
+                    - ^narrate "<blue><npc.name><white>： <strikethrough>因為很酷啊！"
+                    - wait 2
+                    - ^narrate "<blue><npc.name><white>： 基於插件和腳本限制等內部因素, 成就箱這邊的箱子必須從正面才能正常開啟, 避免一些先前發現的bug"
+                    - ^disengage
+
+                A:
+                    trigger: "移除我的箱子所有權/Regex:(?=A)/"
+                    script:
+                    - ^if <player.in_group[Admins]> {
+                            - ^engage
+                            - wait 1
+                            - ^if <yaml[AchivChest].contains[achivchest.registed.<player.name>]> && <yaml[AchivChest].read[achivchest.registed.<player.name>]> != '' {
+                                    - ^narrate "<blue><npc.name><white>： 將移除你的箱子(<gold><yaml[AchivChest].read[achivchest.registed.<player.name>]><white>)所有權"
+                                    - yaml "write:achivchest.chests.<yaml[AchivChest].read[achivchest.registed.<player.name>]>.owner" id:AchivChest
+                                    - yaml write:achivchest.registed.<player.name> id:AchivChest
+                                    - yaml savefile:data/AchivChest.yml id:AchivChest
+                                } else {
+                                    - ^narrate "<blue><npc.name><white>： 你沒有箱子"
+                                }
+                            - ^disengage
+                        }
+
+                B:
+                    trigger: "移除全部箱子的所有權/Regex:(?=B)/"
+                    script:
+                    - ^if <player.in_group[Admins]> {
+                            - ^engage
+                            - wait 1
+                            - ^narrate "<blue><npc.name><white>： 將移除全部箱子的所有權, 請在五秒內輸入 <gold>yes<white> 以確認刪除"
+                            - ^flag npc flag-移除全部:false
+                            - ^run achiv_移除全部 delay:5
+                            - ^disengage
+                        }
+                        
+                Confirm:
+                    trigger: "確認移除全部/Regex:(?=yes)/"
+                    script:
+                    - ^if <player.in_group[Admins]> {
+                            - ^engage
+                            - wait 1
+                            - ^flag npc flag-移除全部:true
+                            - ^narrate "<blue><npc.name><white>： 收到確認刪除的關鍵字, 開始刪除..."
+                            - ^disengage
+                        }
+"achiv_移除全部":
+    type: task
+    script:
+    - ^if <npc.flag[flag-移除全部]> {
+            - ^foreach <yaml[AchivChest].list_keys[achivchest.registed]> {
+                    - ^if %value% != '' {
+                            - ^yaml write:achivchest.chests.<yaml[AchivChest].read[achivchest.registed.%value%]>.owner id:AchivChest
+                            - ^yaml write:achivchest.registed.%value% id:AchivChest
+                            - ^yaml savefile:data/AchivChest.yml id:AchivChest
+                        }
+                }
+            - ^narrate "<blue><npc.name><white>： 完成刪除"
+        } else {
+            - ^narrate "<blue><npc.name><white>： 沒有收到確認刪除的關鍵字, 放棄刪除..."
+        }
+
+"achiv_成就箱":
+    type: task
+    script: 
+    - ^narrate "<blue><npc.name><white>： 哦? 第一次來是吧? 難怪好像沒見過你."
+    - ^wait 2
+    - ^narrate "<blue><npc.name><white>： 嗯... 那本子哪去了... 因為來申請的人不多所以..."
+    - ^wait 3
+    - ^narrate "<blue><npc.name><white>： 有了! (從書架上抽出一本陳舊的的筆記本, 然後快速地翻了幾頁)"
+    - ^wait 2
+    - ^inject achiv_成就箱 p:GetEmptyChest
+    - ^narrate "<blue><npc.name><white>： 你就用 <gold>%randomchest%<white> 那個箱子吧, 前一個用的人好多年沒有回來了, 大概被怪物吃了吧, 哈哈哈..."
+    - ^yaml "write:achivchest.chests.%randomchest%.owner" "value:<player.name>" id:AchivChest
+    - ^yaml "write:achivchest.registed.<player.name>" "value:%randomchest%" id:AchivChest
+    - ^yaml savefile:data/AchivChest.yml id:AchivChest
+    
+    GetEmptyChest:
+    - define randomchest "<util.random.element[A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X]>-<util.random.element[1|2|3]>-<util.random.element[左|右]>"
+    - if <yaml[AchivChest].read[achivchest.chests.%randomchest%.owner]> != null && <yaml[AchivChest].read[achivchest.chests.%randomchest%.owner]> != '' {
+            - inject achiv_成就箱 p:GetEmptyChest
+        }
+    
+    WhereIsChest:
+    - define chest <yaml[AchivChest].read[achivchest.registed.<player.name>].split[-].get[1]>
+    - if A contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>右後方<white>, 就在<yellow>黃色<white>標記旁邊" 
+        else if B|C|D contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>在右後方<white>, 穿過<yellow>黃色<white>標記就能看到了"
+        else if E|I contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>右手邊<white>, 穿過<blue>藍色<white>或<yellow>黃色<white>標記就能看到了"
+        else if F contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>正右方<white>, 旁邊這個就是了"
+        else if G contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>右前方<white>, 在<blue>藍色<white>標記旁邊"
+        else if H|J contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>右前方<white>, 穿過<blue>藍色<white>標記就能看到了"
+        else if K|L contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>櫃台後面<white>, 從兩旁過去就看得到了"
+        else if N contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>左後方<white>, 就在<green>綠色<white>標記旁邊"
+        else if O|P|W|V contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>左後方<white>, 穿過<green>綠色<white>標記就看得到了"
+        else if M contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>左後方<white>, 旁邊這個就是了"
+        else if R|Q|S|T|U contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>正左方<white>, 穿過<green>綠色<white>或<red>紅色<white>標記就看得到了"
+        else if X contains %chest% narrate "<blue><npc.name><white>： 位置在<gold>左前方<white>, 穿過<red>紅色<white>標記就看得到了"
+    
+    

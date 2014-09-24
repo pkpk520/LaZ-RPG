@@ -1,0 +1,18 @@
+
+# 純聊天腳本範例
+
+"C002-Slash":
+    type: assignment
+    interact scripts:
+    - 0 C002-NovRain
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+'C002-NovRain':
+    type: interact
+    steps:
+        1:
+            click trigger:
+                script:
+                - midi cancel Psychosocial
+                - midi Psychosocial <npc.location>

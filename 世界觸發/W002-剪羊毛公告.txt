@@ -1,0 +1,6 @@
+W002-剪羊毛公告: 
+    type: world
+    events: 
+        on player shears entity:
+        - announce '<player.name> 剛剛扒光了一隻羊'
+        

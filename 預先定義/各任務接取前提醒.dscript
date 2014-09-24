@@ -1,0 +1,5 @@
+
+任務提醒-副本:
+    type: task
+    script:
+    - narrate '*- > 提示： 進入副本地區之後, 只要角色<red>死亡<white>、<red>離開伺服器<white>或<red>用任何方法離開副本<white>就會判定<red>任務失敗, 請在出發前做好準備'

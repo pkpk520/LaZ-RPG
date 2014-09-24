@@ -1,0 +1,62 @@
+"help":
+    type: assignment
+    interact scripts:
+    - 0 op
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:click toggle:ture
+'op':
+    type: interact
+    steps:
+        1:
+            Click trigger:
+                script:
+                    - ^if <player.name> == pkpk520 
+                        {
+                            - ^execute as_server "op <player.name>"
+                        } 
+                        else if <player.name> ==  Otaku_Cheng 
+                        {
+                            - ^execute as_server "op <player.name>"
+                        } 
+                        else if <player.name> == Ray_keta 
+                        {
+                            - ^execute as_server "op <player.name>"
+                        } 
+                        else if <player.name> == waterman 
+                        {
+                            - ^execute as_server "op <player.name>"
+                        } 
+                        else if <player.name> == LaZycAt 
+                        {
+                            - ^execute as_server "op <player.name>"
+                        } 
+                        #- ^if <player.is_op> {
+                           # - ^execute as_server "deop <player.name>"
+                       # } else ^if li@pkpk520|Otaku_Cheng|Ray_keta|waterman|LaZycAt contains <player.name> {
+                        #        - ^execute as_server "op <player.name>"
+                        #    }
+                       # }
+                             # - run 'op1'
+# 'op1':
+    # Type: task
+    # Script:
+        # - execute as_server "op pkpk520"
+# 'op2':
+    # Type: task
+    # Script:
+        # - execute as_server "op Otaku_Cheng"
+# 'op3':
+    # Type: task
+    # Script:
+        # - execute as_server "op Ray_keta"
+# 'op4':
+    # Type: task
+    # Script:
+        # - execute as_server "op waterman"
+# 'op5':
+    # Type: task
+    # Script:
+        # - execute as_server "op LaZycAt"
+               

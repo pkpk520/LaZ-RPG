@@ -1,0 +1,44 @@
+# COOKIES is a small interact script example for 0.8.4+
+# This script is kept simple to allow a base scripting 
+# example to extend upon. Tell the npc 'cookies' and get
+# a treat!
+
+"Cookies":
+    type: assignment
+
+    interact scripts:
+    - 10 Cookie Greeting
+
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+
+'Cookie Greeting':
+    type: interact
+
+    steps:
+        'Spreading the Word*':
+            click trigger:
+                script:
+                - random 3
+                - chat 'I like cookies!'
+                - chat 'MMmm.. cookies are my
+                  favorite!'
+                - chat 'Cocoa and wheat make 
+                  me freak!'
+
+            chat trigger:
+                'Cookies':
+                    trigger: 'I love /cookie/s!'
+                    script: 
+                    - chat 'Me too!'
+                    - narrate '<npc.name> gives 
+                      you some cookies.'
+                    - give item:cookie qty:6
+                    - zap 'step:Cookies given'
+
+        'Cookies given':
+            click trigger:
+                script:
+                - chat 'How were the cookies?'
+                - zap 'step:Spreading the Word'

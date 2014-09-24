@@ -1,0 +1,51 @@
+"傳送使者":
+    type: assignment
+    interact scripts:
+    - 0 telepoart
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:click toggle:ture
+'telepoart':
+    type: interact
+    steps:
+        1:
+            Click trigger:
+                script:
+                    - enange
+                    - chat '你好 現在是測試階段喔 除了pk以外都要付錢 告訴我想傳去哪就可以傳送囉！'
+                    - disengage
+            chat trigger:
+                1:
+                    trigger: '/Regex:熊貓城|ponda/'
+                    script:
+                    - run 'tp1'
+                2:
+                    trigger: '/Regex:主城|main/'
+                    script:
+                    - run 'tp2'
+                3:
+                    trigger: '/Regex:play/'
+                    script: 
+                    - run 'tp3'
+'tp1':
+    Type: task
+    Script:
+        - if <player.name> == pkpk520 {
+            } else {
+                - take money qty:200
+            }
+        - teleport <player> l@-505,6,355,29,-220,pkpk
+ 
+'tp2':
+    Type: task
+    Script:
+        - if <player.name> == pkpk520 {
+            } else {    
+                - take money qty:200
+            }
+        - teleport <player> l@-1231,101,1063,9,-87,Main
+'tp3':
+    Type: task
+    Script: 
+        - teleport <player> l@-1346,74,-252,33,-279,play
