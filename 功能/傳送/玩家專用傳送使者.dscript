@@ -22,7 +22,7 @@
                     script:
                         - run 'A1'
                 2:
-                    trigger: '/Regex:heaven|play2/'
+                    trigger: '/Regex:heaven/'
                     script:
                         - run 'A2'
                 3:
@@ -74,5 +74,4 @@
         - if <player.name> == Ray_keta {
             - narrate '4'
             }
-
-			
+            
