@@ -17,14 +17,14 @@
             click trigger:
                 script:
                 - ^narrate "點擊觸發開啟商店"
-                - inventory open d:in@storeaa 
+                - inventory open d:in@shop2 
             
             chat trigger:
                 1:
                     trigger: '/Regex:.+/'
                     script:
                     - ^narrate "交談觸發開啟商店"
-                    - inventory open d:in@storeaa 
+                    - inventory open d:in@shop1 
     
 "箱子商店測試":
     type: world
