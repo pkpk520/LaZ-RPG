@@ -18,13 +18,14 @@
                 script:
                 - ^narrate "點擊觸發開啟商店"
                 - inventory open d:in@shop2 
-            
+                - DETERMINE CANCELLED
             chat trigger:
                 1:
                     trigger: '/Regex:.+/'
                     script:
                     - ^narrate "交談觸發開啟商店"
-                    - inventory open d:in@shop1 
+                    - inventory open d:in@shop1
+                    - DETERMINE CANCELLED                    
     
 "箱子商店測試":
     type: world
