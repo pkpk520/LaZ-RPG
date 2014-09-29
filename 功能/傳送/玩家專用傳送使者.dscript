@@ -66,7 +66,7 @@
             <player.name> == Chen ||
             <player.name> == iLegendary7 ||
             <player.name> == kh953149 ||
-            <player.name> == waterman{
+            <player.name> == waterman {
                 - teleport <player.name> l@96,73,285,10,-82,play2
             }
 'A3':
