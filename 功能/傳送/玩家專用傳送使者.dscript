@@ -42,7 +42,8 @@
             <player.name> == jeff1810qw ||
             <player.name> == patrick339 ||
             <player.name> == Jon ||
-            <player.name> == ShaKugaNTim {
+            <player.name> == ShaKugaNTim 
+            <player.name> == Chen {
                 - teleport <player.name> l@-1398,69,-405,21,-93,play
             }
 'A2':
@@ -58,7 +59,8 @@
             <player.name> == jeff1810qw ||
             <player.name> == patrick339 ||
             <player.name> == Jon ||
-            <player.name> == ShaKugaNTim {
+            <player.name> == ShaKugaNTim 
+            <player.name> == Chen {
                 - teleport <player.name> l@96,73,285,10,-82,play2
             }
 'A3':
