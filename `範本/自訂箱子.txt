@@ -1,0 +1,23 @@
+
+
+## 範例
+
+"shop1":
+    type: inventory     # 定義為物品欄
+    inventory: CHEST    # 介面類型
+    title: 商店第一頁   # 箱子名稱
+    size: 9             # 箱子格數 (必須為9的倍數)
+    slots:              # 箱子內容
+    - "[物品1] [物品2] [i@id|name] [] [] [] [] [] []"
+
+
+## 複製區
+
+"shop":
+    type: inventory 
+    inventory: CHEST 
+    title: 箱子名稱
+    size: 9
+    slots: 
+    - "[] [] [] [] [] [] [] [] []"
+

@@ -44,7 +44,7 @@
                     trigger: "我想要創立公會/Regex:(?=創立|1)/"
                     script: 
                     - ^engage
-                    - inject yamltest p:Talking
+                    - inject "Guild_創立公會" p:Talking
                     - ^disengage
                     
                 2:

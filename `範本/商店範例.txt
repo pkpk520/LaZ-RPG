@@ -1,5 +1,7 @@
 
 
+
+
 "NPC商店測試":
     type: assignment
     interact scripts:
@@ -26,27 +28,40 @@
                     - ^narrate "交談觸發開啟商店"
                     - inventory open d:in@shop1
                     - DETERMINE CANCELLED                    
-    
-"箱子商店測試":
-    type: world
-    events: 
-        on player right clicks CHEST: 
-        - if <context.location.simple> == -1367,179,1075,Main { 
-                - inventory open d:in@shop1 
-                - DETERMINE CANCELLED 
-            }
 
+
+"箱子商店":
+    type: world
+    events:
+        # 偵測對箱子右鍵的事件
+        on player right clicks CHEST: 
+        # 箱子的位置 (大箱子必須指定兩個座標 ↓)
+        # - if <context.location.simple> == 座標A || <context.location.simple> == 座標B {
+        # inventory 的 d: 打開指定物品欄
+        # determine cancelled = return 會把事件取消, 如果不取消他會打開原本的箱子
+        - if <context.location.simple> == 座標 {
+                - inventory open d:in@shop1 
+                - determine cancelled
+            }
+        
+        # 偵測對箱子內物品點擊動作
         on player clicks in inventory:
+        # 判斷目前是在哪個物品欄
+        # queue clear = return null 把程序中斷, 不繼續跑底下程式碼
+        # 如果不判斷這邊, 他會一直偵測所有物品欄和箱子
         - if <context.inventory.title> != 商店第一頁 && <context.inventory.title> != 商店第二頁 {
                 - queue clear
             }
         
+        # 定義目前開啟的物品欄是哪個
         - if <context.inventory.title> == 商店第一頁 {
                 - define szInvName in@shop1
             } else if <context.inventory.title> == 商店第二頁 {
                 - define szInvName in@shop2
             }
             
+        # 按什麼物品則跑什麼功能
+        # 以下為 上一頁下一頁等功能
         - if <context.item> == i@btn_readme {
                 - inventory open d:%szInvName%
                 - determine cancelled
@@ -60,7 +75,9 @@
                 - determine cancelled
                 - queue clear
             }
-            
+        
+        # 第一行判斷點的地方不是快速列
+        # <context.slot> less 需指定為箱子大小
         - if <context.slot_type> != quickbar && <context.slot> less 9 {
                 - if <context.item> == i@Goods1_shop {
                         - define iCost 5
@@ -93,18 +110,12 @@
             # }
 
     MoneyCheck:
-    - narrate <player.money>
-    - narrate <player.money.sub[5]>
-    - narrate <player.money.sub[5].is[less].then[0]>
-    # - narrate <<player.money.sub[5]>.is[less].then[0]>
-    # - narrate %iCost%
-    - if <player.money> >= %iCost% {
+    - if <player.money.sub[5].is[less].then[0]> {
+            - narrate "[<aqua>商店<white>] 錢不夠啊! 你怎麼能這麼窮?!"
+        } else {
             - narrate "[<aqua>商店<white>] 購買了物品"
             - take money qty:%iCost%
             - give %szItem% qty:%iQty%
-            
-        } else {
-            - narrate "[<aqua>商店<white>] 錢不夠啊! 你怎麼能這麼窮?!"
         }
         
 "bla":
@@ -123,7 +134,7 @@
     - "<yellow>售價: 5"
     
 "Goods1": 
-    type: item
+    type: item 
     material: STONE_SWORD 
     display name: 長劍
     lore:  
@@ -133,7 +144,6 @@
     type: item 
     material: STICK 
     display name: 就只是樹枝
-    cost: 1
     lore:  
     - "<Bold>超強大的樹枝哦!"
     - ""

@@ -15,6 +15,7 @@ imperial_sword:
     enchantments:
     - damage_all:5
     recipe:
-    - air|air|air
-    - dirt|349|dirt
-    - air|air|air
+    - 266|266|266
+    - 266|349|266
+    - 266|266|266
+    

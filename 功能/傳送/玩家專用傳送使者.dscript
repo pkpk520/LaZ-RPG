@@ -90,6 +90,3 @@
         - if <player.name> == Ray_keta {
             - narrate '4'
             }
-            
-			
-			
