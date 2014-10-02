@@ -50,7 +50,8 @@
             <player.name> == cccsm123 ||
             <player.name> == az142536 ||
             <player.name> == Liu ||
-            <player.name> == sadfhg2013 {
+            <player.name> == sadfhg2013 ||
+            <player.name> == kens {
                 - teleport <player.name> l@-1398,69,-405,21,-93,play
             }
 'A2':
@@ -74,7 +75,8 @@
             <player.name> == cccsm123 ||
             <player.name> == az142536 ||
             <player.name> == Liu ||
-            <player.name> == sadfhg2013 {
+            <player.name> == sadfhg2013 ||
+            <player.name> == kens {
                 - teleport <player.name> l@96,73,285,10,-82,play2
             }
 'A3':
