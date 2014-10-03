@@ -1,0 +1,302 @@
+
+
+"NPC004":
+    type: assignment
+    interact scripts:
+    - 2 NPC004-Shop
+    actions:
+        on assignment:
+        - trigger name:chat toggle:true
+        - trigger name:proximity toggle:false
+        
+
+"NPC004-Shop":
+    type: interact
+    steps:
+        'Greetings*':
+            click trigger:
+                script:
+                - ^narrate "點擊觸發開啟商店"
+                - inventory open d:in@shop-001 
+                - DETERMINE CANCELLED
+            chat trigger:
+                1:
+                    trigger: '/Regex:.+/'
+                    script:
+                    - ^narrate "交談觸發開啟商店"
+                    - inventory open d:in@shop-001
+                    - DETERMINE CANCELLED                    
+    
+"Shopevent-001":
+    type: world
+    events: 
+        on player clicks in inventory:
+        - if <context.inventory.title> != shop-001 && <context.inventory.title> != shop-002 {
+                - queue clear
+            }
+        
+        - if <context.inventory.title> == shop-001 {
+                - define szInvName in@shop-001
+            } else if <context.inventory.title> == shop-002 {
+                - define szInvName in@shop-002
+            }
+            
+        - if <context.item> == i@read {
+                - inventory open d:%szInvName%
+                - determine cancelled
+                - queue clear
+            } else if <context.item> == i@next {
+                - inventory open d:in@shop-002
+                - determine cancelled
+                - queue clear
+            } else if <context.item> == i@up {
+                - inventory open d:in@shop-001
+                - determine cancelled
+                - queue clear
+            }
+            
+        - if <context.slot_type> != quickbar && <context.slot> less 9 {
+                - if <context.item> == i@item1 {
+                        - define iCost 1500
+                        - define szItem i@item2
+                        - define iQty 1
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i2 {
+                        - define iCost 200
+                        - define szItem i@17
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i3 {
+                        - define iCost 200
+                        - define szItem i@17:1
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i4 {
+                        - define iCost 400
+                        - define szItem i@35
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i5 {
+                        - define iCost 250
+                        - define szItem i@stone
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i6 {
+                        - define iCost 200
+                        - define szItem i@4
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i7 {
+                        - define iCost 200
+                        - define szItem i@12
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i8 {
+                        - define iCost 100
+                        - define szItem i@13
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i9 {
+                        - define iCost 150
+                        - define szItem i@3
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i10 {
+                        - define iCost 500
+                        - define szItem i@48
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i11 {
+                        - define iCost 800
+                        - define szItem i@80
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i12 {
+                        - define iCost 500
+                        - define szItem i@155
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i13 {
+                        - define iCost 500
+                        - define szItem i@89
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - if <context.item> == i@i14 {
+                        - define iCost 500
+                        - define szItem i@112
+                        - define iQty 64
+                        - inject locally MoneyCheck
+                    }
+                - inventory open d:%szInvName%
+                - determine cancelled
+            }
+            
+    MoneyCheck:
+    - if <player.money> >= %iCost% {
+            - narrate "[<aqua>商店<white>] 購買了物品"
+            - narrate "<black>扣除了<yellow> %iCost% <black>元"
+            - take money qty:%iCost%
+            - give %szItem% qty:%iQty%
+            
+        } else {
+            - narrate "[<aqua>商店<white>] 錢不夠啊! 你怎麼能這麼窮?!"
+            
+            
+"bla":
+    type: task
+    script:
+    - execute as_server "tellraw <player.name> {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},{'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
+
+"shop-001":
+    type: inventory 
+    inventory: CHEST 
+    title: shop-001
+    size: 9
+    slots: 
+    - "[item1] [i2] [i3] [i4] [i5] [i6] [i7] [read] [next]"
+"shop-002":
+    type: inventory 
+    inventory: CHEST 
+    title: shop-002
+    size: 9
+    slots: 
+    - "[i8] [i9] [i10] [i11] [i12] [i13] [i14] [read] [up]"
+"item1": 
+    type: item
+    material: 339
+    display name: 隱藏合成公式
+    lore:
+    - "<red>神秘的隱藏合成公式"
+    - "<yellow>售價:1500"
+"i2": 
+    type: item
+    material: 17
+    display name: 一組橡木
+    lore:
+    - "一組橡木"
+    - "<yellow>售價:200"
+"i3": 
+    type: item
+    material: spruce_log
+    display name: 一組杉木
+    lore:
+    - "一組杉木"
+    - "<yellow>售價:200"
+"i4": 
+    type: item
+    material: 35
+    display name: 一組羊毛
+    lore:
+    - "一組羊毛"
+    - "<yellow>售價:400"
+"i5": 
+    type: item
+    material: 1
+    display name: 一組石頭
+    lore:
+    - "一組石頭"
+    - "<yellow>售價:250"
+"i6": 
+    type: item
+    material: 4
+    display name: 一組鵝卵石
+    lore:
+    - "一組鵝卵石"
+    - "<yellow>售價:200"
+"i7": 
+    type: item
+    material: 12
+    display name: 一組沙子
+    lore:
+    - "一組沙子"
+    - "<yellow>售價:200"
+"i8": 
+    type: item
+    material: 13
+    display name: 一組礫石
+    lore:
+    - "一組礫石"
+    - "<yellow>售價:100"
+"i9": 
+    type: item
+    material: 3
+    display name: 一組土
+    lore:
+    - "一組土"
+    - "<yellow>售價:150"
+"i10": 
+    type: item
+    material: 48
+    display name: 一組青苔石
+    lore:
+    - "一組青苔石"
+    - "<yellow>售價:500"
+"i11": 
+    type: item
+    material: 80
+    display name: 一組雪
+    lore:
+    - "一組雪"
+    - "<yellow>售價:800"
+"i12": 
+    type: item
+    material: 155
+    display name: 一組石英磚
+    lore:
+    - "一組石英磚"
+    - "<yellow>售價:500"
+"i13": 
+    type: item
+    material: 89
+    display name: 一組螢光石
+    lore:
+    - "一組螢光石"
+    - "<yellow>售價:500"
+"i14": 
+    type: item
+    material: 112
+    display name: 一組地獄磚
+    lore:
+    - "一組地獄磚"
+    - "<yellow>售價:500"
+"item2": 
+    type: item
+    material: 339
+    display name: 隱藏何成公式
+    lore:
+    - "金碇|金碇|金碇"
+    - "金碇|魚|金碇"
+    - "金碇|金碇|金碇"
+"read": 
+    type: item
+    material: 339
+    display name: 說明
+    lore:
+    - "<white>按一下商品就會直接購買"
+    - "<red>目前只有做好購買系統"
+    - "<red>販賣還沒做好, 身上物品丟進商店會被吃掉"
+"next": 
+    type: item
+    material: 69
+    display name: 下一頁
+    lore:
+    - "下一頁"
+"up": 
+    type: item
+    material: 76
+    display name: 上一頁
+    lore:
+    - "上一頁"
