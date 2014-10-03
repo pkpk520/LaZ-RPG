@@ -107,11 +107,6 @@
             - narrate "[<aqua>商店<white>] 錢不夠啊! 你怎麼能這麼窮?!"
         }
         
-"bla":
-    type: task
-    script:
-    - execute as_server "tellraw <player.name> {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},{'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
-
 
 "Goods1_shop": 
     type: item 
