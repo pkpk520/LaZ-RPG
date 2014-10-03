@@ -61,80 +61,67 @@
                         - define szItem i@item2
                         - define iQty 1
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i2 {
+                    } else if <context.item> == i@i2 {
                         - define iCost 200
                         - define szItem i@17
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i3 {
+                    } else if <context.item> == i@i3 {
                         - define iCost 200
                         - define szItem i@17:1
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i4 {
+                    } else if <context.item> == i@i4 {
                         - define iCost 400
                         - define szItem i@35
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i5 {
+                    } else if <context.item> == i@i5 {
                         - define iCost 250
                         - define szItem i@stone
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i6 {
+                    } else if <context.item> == i@i6 {
                         - define iCost 200
                         - define szItem i@4
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i7 {
+                    } else if <context.item> == i@i7 {
                         - define iCost 200
                         - define szItem i@12
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i8 {
+                    } else if <context.item> == i@i8 {
                         - define iCost 100
                         - define szItem i@13
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i9 {
+                    } else if <context.item> == i@i9 {
                         - define iCost 150
                         - define szItem i@3
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i10 {
+                    } else if <context.item> == i@i10 {
                         - define iCost 500
                         - define szItem i@48
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i11 {
+                    } else if <context.item> == i@i11 {
                         - define iCost 800
                         - define szItem i@80
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i12 {
+                    } else if <context.item> == i@i12 {
                         - define iCost 500
                         - define szItem i@155
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i13 {
+                    } else if <context.item> == i@i13 {
                         - define iCost 500
                         - define szItem i@89
                         - define iQty 64
                         - inject locally MoneyCheck
-                    }
-                - if <context.item> == i@i14 {
+                    } else if <context.item> == i@i14 {
                         - define iCost 500
                         - define szItem i@112
                         - define iQty 64
