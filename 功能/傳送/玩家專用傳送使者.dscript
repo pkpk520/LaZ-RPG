@@ -32,7 +32,7 @@
 'A1':
     Type: task
     Script:
-        - if <player.in_group[Member]> ||
+        - if <player.in_group[VIP]> ||
             <player.name> == ANTI ||
             <player.name> == whitpillow ||
             <player.name> == danny940111 ||
@@ -51,13 +51,15 @@
             <player.name> == az142536 ||
             <player.name> == Liu ||
             <player.name> == sadfhg2013 ||
+            <player.name> == komeneko ||
+            <player.name> == konbanwao ||
             <player.name> == kens {
                 - teleport <player.name> l@-1398,69,-405,21,-93,play
             }
 'A2':
     Type: task
     Script:
-        - if <player.in_group[Member]> ||
+        - if <player.in_group[VIP]> ||
             <player.name> == ANTI ||
             <player.name> == whitpillow ||
             <player.name> == danny940111 ||
@@ -76,6 +78,8 @@
             <player.name> == az142536 ||
             <player.name> == Liu ||
             <player.name> == sadfhg2013 ||
+            <player.name> == komeneko ||
+            <player.name> == konbanwao ||
             <player.name> == kens {
                 - teleport <player.name> l@96,73,285,10,-82,play2
             }
