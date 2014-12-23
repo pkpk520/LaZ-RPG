@@ -17,7 +17,7 @@
 CMD-ID: 
     type: world
     events: 
-        on id command:
+        on idd command:
         - narrate "<gold>ID-- <white><player.item_in_hand.id>"
         - narrate "<gold>Name-- <white><player.item_in_hand>"
         - determine fulfilled

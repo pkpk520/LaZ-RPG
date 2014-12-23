@@ -12,9 +12,9 @@
         1:
             Click trigger: 
                 script: 
-                    - narrate '你好,我是不白玩家專用的傳送使者'
-                    - narrate '對著我說play可以進入小白專用區'
-                    - narrate '對著我說heaven可以進入不白專用區'
+                    - narrate '你好,我是VIP專用的傳送使者'
+                    - narrate '對著我說play可以進入一般地區'
+                    - narrate '對著我說heaven可以進入VIP地區'
                     - narrate '請保持素質'
             Chat trigger: 
                 1:
@@ -33,6 +33,7 @@
     Type: task
     Script:
         - if <player.in_group[VIP]> ||
+            <player.in_group[TPplay]> ||
             <player.name> == ANTI ||
             <player.name> == whitpillow ||
             <player.name> == danny940111 ||
@@ -60,6 +61,7 @@
     Type: task
     Script:
         - if <player.in_group[VIP]> ||
+            <player.in_group[TPplay]> ||
             <player.name> == ANTI ||
             <player.name> == whitpillow ||
             <player.name> == danny940111 ||
